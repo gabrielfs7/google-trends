@@ -13,8 +13,9 @@ $results = (new Gsoares\GoogleTrends\Search())
     ->setLocation('US')
     ->setLanguage('en-US')
     ->addWord('hair')
-    ->setLastDays(30)
+    ->setLastDays(30) // allowed: 7, 30, 90, 365
     ->searchJson();
+    
 /* $results = (string) 
 {  
    "searchUrl":"http://www.google.com/trends/fetchComponent?hl=en-US&cat=0-44&geo=US&q=hair&cid=TOP_QUERIES_0_0&date=today+30-d&cmpt=q&content=1&export=3",
