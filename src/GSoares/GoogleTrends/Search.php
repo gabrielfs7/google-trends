@@ -92,12 +92,26 @@ class Search
     }
 
     /**
-     * @param integer $lastDays
+     * @param $lastDays
      * @return $this
+     * @throws \InvalidArgumentException
      */
     public function setLastDays($lastDays)
     {
-        $this->lastDays = 'today+' . intval($lastDays) . '-d';
+        if (!in_array($lastDays, $allowedDays = [7, 30, 90, 365])) {
+            throw new \InvalidArgumentException(
+                'Allowed days: ' . implode(', ', $allowedDays) .
+                '. Supplied: ' . strval($lastDays)
+            );
+        }
+
+        if ($lastDays == 7) {
+            $this->lastDays = 'today+' . intval($lastDays) . '-d';
+        }
+
+        if ($lastDays != 7) {
+            $this->lastDays = 'today+' . ceil(bcdiv($lastDays, 30)) . '-m';
+        }
 
         return $this;
     }

@@ -11,8 +11,8 @@ $results = (new Gsoares\GoogleTrends\Search())
     ->setCategory(Gsoares\GoogleTrends\Category::BEAUTY_AND_FITNESS)
     ->setLocation('US')
     ->setLanguage('en-US')
-    ->addWord('hais')
-    ->setLastDays(30)
+    ->addWord(isset($_GET['word']) ? $_GET['word'] : 'hair')
+    ->setLastDays(90)
     ->search();
 ?>
 <h1>Google Trends - Results</h1>
