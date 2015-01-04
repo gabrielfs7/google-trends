@@ -1,0 +1,34 @@
+{
+    "name": "gabrielfs7/google-trends",
+    "description": "PHP Google Trends API",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Gabriel Felipe Soares",
+            "email": "gabrielfs7@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.5",
+        "seostats/seostats": "dev-master"
+    },
+    "require-dev" : {
+        "phpunit/phpunit" : "4.0.x",
+        "squizlabs/php_codesniffer" : "*",
+        "phpmd/phpmd" : "*",
+        "guzzle/guzzle": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "GSoares\\SeoAnalytics\\": "src/",
+            "": "src/"
+        },
+        "psr-0": {
+            "GSoares\\SeoAnalytics\\": "src/",
+            "": "src/"
+        }
+    },
+    "config": {
+        "bin-dir": "bin"
+    }
+}
