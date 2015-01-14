@@ -8,8 +8,8 @@ Samples
 
 ```php
 <?php
-$results = (new Gsoares\GoogleTrends\Search())
-    ->setCategory(Gsoares\GoogleTrends\Category::BEAUTY_AND_FITNESS)
+$results = (new GSoares\GoogleTrends\Search())
+    ->setCategory(GSoares\GoogleTrends\Category::BEAUTY_AND_FITNESS)
     ->setLocation('US')
     ->setLanguage('en-US')
     ->addWord('hair')
