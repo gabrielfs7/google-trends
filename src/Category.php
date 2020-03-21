@@ -1,9 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace GSoares\GoogleTrends;
 
 /**
  * @author Gabriel Felipe Soares <gabrielfs7@gmail.com>
- * @package GSoares\GoogleTrends
  */
 class Category
 {
