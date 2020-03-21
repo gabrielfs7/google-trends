@@ -7,46 +7,38 @@
 <body>
 <?php
 try {
-$results = (new Gsoares\GoogleTrends\Search())
-    ->setCategory(Gsoares\GoogleTrends\Category::BEAUTY_AND_FITNESS)
-    ->setLocation('US')
-    ->setLanguage('en-US')
-    ->addWord(isset($_GET['word']) ? $_GET['word'] : 'hair')
-    ->setLastDays(90)
-    ->search();
-?>
-<h1>Google Trends - Results</h1>
-<table border="1">
-    <thead>
-    <th>TOTAL</th>
-    <th>URL</th>
-    </thead>
-    <tbody>
-    <td><?=$results->totalResults ?></td>
-    <td><a href="<?=$results->searchUrl ?>"><?=$results->searchUrl ?></a></td>
-    </tbody>
-</table>
-<br/>
-<br/>
-<table border="1">
-    <thead>
-    <th>Term</th>
-    <th>Ranking</th>
-    <th>Search URL</th>
-    <th>Search Image URL</th>
-    <th>Trends URL</th>
-    </thead>
-    <tbody>
-    <?php foreach ($results->results as $term) { ?>
-    <td><?=$term->term ?></td>
-    <td><?=$term->ranking ?>%</td>
-    <td><a href="<?=$term->searchUrl ?>"><?php echo $term->searchUrl ?></a></td>
-    <td><a href="<?=$term->searchImageUrl ?>"><?php echo $term->searchImageUrl ?></a></td>
-    <td><a href="<?=$term->trendsUrl ?>"><?php echo $term->trendsUrl ?></a></td>
-    </tbody>
-    <?php } ?>
-</table>
-<?php
+    $results = (new GSoares\GoogleTrends\Search())
+        ->setCategory(GSoares\GoogleTrends\Category::BEAUTY_AND_FITNESS)
+        ->setLocation('US')
+        ->setLanguage('en-US')
+        ->addWord(isset($_GET['word']) ? $_GET['word'] : 'hair')
+        ->setLastDays(90)
+        ->searchRelatedTerms();
+    ?>
+    <h1>Google Trends - Results</h1>
+    <table border="1">
+        <thead>
+        <th>TOTAL</th>
+        <th colspan="2">URL</th>
+        </thead>
+        <tbody>
+        <td><?= count($results->getResults()) ?></td>
+        <td colspan="2"><a href="<?= $results->getSearchUrl() ?>"><?= $results->getSearchUrl() ?></a></td>
+        </tbody>
+        <thead>
+        <th>Term</th>
+        <th>Ranking</th>
+        <th>Search URL</th>
+        </thead>
+        <tbody>
+        <?php foreach ($results->getResults() as $term) { ?>
+        <td><?= $term->getTerm() ?></td>
+        <td><?= $term->getRanking() ?>%</td>
+        <td><a href="<?= $term->getSearchUrl() ?>"><?php echo $term->getSearchUrl() ?></a></td>
+        </tbody>
+        <?php } ?>
+    </table>
+    <?php
 } catch (\Exception $e) {
     echo '<h1>Google Trends - ERROR</h1>';
     echo $e->getMessage();
