@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace GSoares\GoogleTrends\Dto;
+namespace GSoares\GoogleTrends\Result;
 
 use JsonSerializable;
 
 /**
  * @author Gabriel Felipe Soares <gabrielfs7@gmail.com>
  */
-class TermDto implements JsonSerializable
+class KeywordResult implements JsonSerializable
 {
     /**
      * @var string
