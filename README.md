@@ -2,7 +2,7 @@
 
 Easy way to request search on Google Trends and get a standard response in JSON or PHP DTO.
 
-- Currently supports only related search terms
+- Currently supports only related search terms.
 
 ## Usage
 
@@ -45,3 +45,7 @@ $results = (new GSoares\GoogleTrends\Search())
 ## Installation
 
 1. Project available in https://packagist.org/packages/gabrielfs7/google-trends to install via composer.
+
+## Google Categories
+
+You can find the categories available on Google [here](/config/categories.json).
