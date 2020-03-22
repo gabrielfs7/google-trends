@@ -2,7 +2,9 @@
 
 namespace GSoares\GoogleTrends;
 
+use DateTimeImmutable;
 use DateTimeInterface;
+use GSoares\GoogleTrends\Error\GoogleTrendsException;
 use InvalidArgumentException;
 
 /**
@@ -11,6 +13,12 @@ use InvalidArgumentException;
 class SearchQueryBuilder
 {
     private const RELATED_SEARCH_URL = 'https://trends.google.com/trends/api/widgetdata/relatedsearches';
+    private const ALLOWED_DAYS = [
+        7,
+        30,
+        90,
+        365,
+    ];
 
     /**
      * @var string
@@ -28,7 +36,7 @@ class SearchQueryBuilder
     private $language;
 
     /**
-     * @var string
+     * @var int
      */
     private $category;
 
@@ -43,12 +51,17 @@ class SearchQueryBuilder
     private $metrics;
 
     /**
-     * @var DateTimeInterface
+     * @var string
      */
-    private $monthInterval;
+    private $time;
 
     /**
-     * @var DateTimeInterface
+     * @var string
+     */
+    private $compareTime;
+
+    /**
+     * @var int
      */
     private $lastDays;
 
@@ -56,6 +69,8 @@ class SearchQueryBuilder
     {
         $this->query = [];
         $this->metrics = [];
+        $this->lastDays = 'today+7-d';
+        $this->withinInterval(new DateTimeImmutable('-8 days'), new DateTimeImmutable('-1 day'));
     }
 
     public function withToken(string $token): self
@@ -65,40 +80,40 @@ class SearchQueryBuilder
         return $this;
     }
 
-    public function withMonthInterval(DateTimeInterface $initialMonth, DateTimeInterface $finalMonth): self
+    public function withinInterval(DateTimeInterface $from, DateTimeInterface $to): self
     {
-        if ($initialMonth->format('Ym') === $finalMonth->format('Ym')) {
-            $this->monthInterval = $initialMonth->format('m/Y');
-        }
+        $compareFrom = (new DateTimeImmutable($from->format('Y-m-d H:i:s')))->modify('-1 year -2 days');
+        $compareTo = (new DateTimeImmutable($to->format('Y-m-d H:i:s')))->modify('-1 year -1 days');
 
-        if ($initialMonth->format('Ym') !== $finalMonth->format('Ym')) {
-            $monthsDifference = ($initialMonth->format('m') - $finalMonth->format('m')) * -1;
-            $yearsDifference = ($initialMonth->format('Y') - $finalMonth->format('Y')) * 12;
-
-            $this->monthInterval = $initialMonth->format('m/Y') . '+' . (($yearsDifference - $monthsDifference) * -1) . 'm';
-        }
+        $this->time = $from->format('Y-m-d') . '+' . $to->format('Y-m-d');
+        $this->compareTime = $compareFrom->format('Y-m-d') . '+' . $compareTo->format('Y-m-d');
 
         return $this;
     }
 
-    public function withLastDays(int $lastDays): self
+    /**
+     * @param int $lastDays
+     *
+     * @return $this
+     *
+     * @throws GoogleTrendsException
+     */
+    public function withinLastDays(int $lastDays): self
     {
-        if (!in_array($lastDays, $allowedDays = [7, 30, 90, 365])) {
-            throw new InvalidArgumentException(
-                sprintf('Allowed days: %s Supplied: %s',
-                    implode(', ', $allowedDays),
+        if (!in_array($lastDays, self::ALLOWED_DAYS)) {
+            throw new GoogleTrendsException(
+                sprintf('Allowed days: %s. Supplied: %s',
+                    implode(', ', self::ALLOWED_DAYS),
                     $lastDays
                 )
             );
         }
 
-        if ($lastDays == 7) {
-            $this->lastDays = 'today+' . $lastDays . '-d';
-        }
+        $pattern = $lastDays === 7
+            ? $lastDays . '-d'
+            : ceil(bcdiv((string)$lastDays, '30')) . '-m';
 
-        if ($lastDays != 7) {
-            $this->lastDays = 'today+' . ceil(bcdiv((string)$lastDays, '30')) . '-m';
-        }
+        $this->lastDays = 'today+' . $pattern;
 
         return $this;
     }
@@ -124,7 +139,7 @@ class SearchQueryBuilder
         return $this;
     }
 
-    public function withCategory(string $category)
+    public function withCategory(int $category)
     {
         $this->category = $category;
 
@@ -152,8 +167,8 @@ class SearchQueryBuilder
                 'geo' => [
                     'country' => $this->location,
                 ],
-                'time' => '2019-03-21+2020-03-21',
-                'originalTimeRangeForExploreUrl' => 'today+12-m',
+                'time' => $this->time,
+                'originalTimeRangeForExploreUrl' => $this->lastDays,
                 'complexKeywordsRestriction' => [
                     'keyword' => [
                         [
@@ -163,15 +178,15 @@ class SearchQueryBuilder
                     ],
                 ],
             ],
-            'keywordType' => 'QUERY',
+            'keywordType' => $this->category === 0 ? 'QUERY' : 'ENTITY',
             'metric' => $this->metrics,
             'trendinessSettings' => [
-                'compareTime' => '2018-03-19+2019-03-20',
+                'compareTime' => $this->compareTime,
             ],
             'requestOptions' => [
                 'property' => '',
                 'backend' => 'IZG',
-                'category' => 0,
+                'category' => $this->category,
             ],
             'language' => 'en',
         ];

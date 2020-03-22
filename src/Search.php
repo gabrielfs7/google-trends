@@ -39,7 +39,7 @@ class Search
             $this->queryBuilder
                 ->withLanguage(self::DEFAULT_LANG)
                 ->withLocation(self::DEFAULT_COUNTRY)
-                ->withMonthInterval((new DateTimeImmutable('now'))->modify('-12 months'), new DateTimeImmutable('now'));
+                ->withinInterval((new DateTimeImmutable('now'))->modify('-12 months'), new DateTimeImmutable('now'));
         }
     }
 
@@ -63,9 +63,9 @@ class Search
         } catch (ClientException $exception) {
             throw new GoogleTrendsException(
                 sprintf(
-                    'Request error with status code "%s" and content "%s"',
+                    'Request error with status code "%s" for url %s',
                     $exception->getResponse()->getStatusCode(),
-                    (string)$exception->getResponse()->getBody()
+                    $searchUrl
                 ),
                 $exception
             );
