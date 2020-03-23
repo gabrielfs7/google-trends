@@ -1,17 +1,19 @@
 <?php declare(strict_types=1);
 
-namespace GSoares\GoogleTrends;
+namespace GSoares\GoogleTrends\Builder;
 
 use DateTimeImmutable;
 use DateTimeInterface;
 use GSoares\GoogleTrends\Error\GoogleTrendsException;
-use InvalidArgumentException;
 
 /**
  * @author Gabriel Felipe Soares <gabrielfs7@gmail.com>
  */
-class SearchQueryBuilder
+class RelatedSearchUrlBuilder
 {
+    private const DEFAULT_LAST_DAYS = 7;
+    private const DEFAULT_LANG = 'en-US';
+    private const DEFAULT_COUNTRY = 'US';
     private const RELATED_SEARCH_URL = 'https://trends.google.com/trends/api/widgetdata/relatedsearches';
     private const ALLOWED_DAYS = [
         7,
@@ -43,7 +45,7 @@ class SearchQueryBuilder
     /**
      * @var string
      */
-    private $query;
+    private $terms;
 
     /**
      * @var string
@@ -61,16 +63,19 @@ class SearchQueryBuilder
     private $compareTime;
 
     /**
-     * @var int
+     * @var string
      */
     private $lastDays;
 
     public function __construct()
     {
-        $this->query = [];
+        $this->terms = [];
         $this->metrics = [];
-        $this->lastDays = 'today+7-d';
-        $this->withinInterval(new DateTimeImmutable('-8 days'), new DateTimeImmutable('-1 day'));
+
+        $this->withinLastDays(self::DEFAULT_LAST_DAYS)
+            ->withLanguage(self::DEFAULT_LANG)
+            ->withLocation(self::DEFAULT_COUNTRY)
+            ->withinInterval((new DateTimeImmutable())->modify('-1 year'), new DateTimeImmutable());
     }
 
     public function withToken(string $token): self
@@ -85,8 +90,8 @@ class SearchQueryBuilder
         $compareFrom = (new DateTimeImmutable($from->format('Y-m-d H:i:s')))->modify('-1 year -2 days');
         $compareTo = (new DateTimeImmutable($to->format('Y-m-d H:i:s')))->modify('-1 year -1 days');
 
-        $this->time = $from->format('Y-m-d') . '+' . $to->format('Y-m-d');
-        $this->compareTime = $compareFrom->format('Y-m-d') . '+' . $compareTo->format('Y-m-d');
+        $this->time = $from->format('Y-m-d') . ' ' . $to->format('Y-m-d');
+        $this->compareTime = $compareFrom->format('Y-m-d') . ' ' . $compareTo->format('Y-m-d');
 
         return $this;
     }
@@ -113,7 +118,7 @@ class SearchQueryBuilder
             ? $lastDays . '-d'
             : ceil(bcdiv((string)$lastDays, '30')) . '-m';
 
-        $this->lastDays = 'today+' . $pattern;
+        $this->lastDays = 'today ' . $pattern;
 
         return $this;
     }
@@ -155,9 +160,34 @@ class SearchQueryBuilder
 
     public function withWord(string $word)
     {
-        $this->query[$word] = $word;
+        $this->terms[$word] = $word;
 
         return $this;
+    }
+
+    public function getLocation(): string
+    {
+        return $this->location;
+    }
+
+    public function getLanguage(): string
+    {
+        return $this->language;
+    }
+
+    public function getCategory(): int
+    {
+        return $this->category;
+    }
+
+    public function getLastDays(): string
+    {
+        return $this->lastDays;
+    }
+
+    public function getSearchTerms(): string
+    {
+        return implode(',', $this->terms);
     }
 
     public function build(): string
@@ -173,12 +203,12 @@ class SearchQueryBuilder
                     'keyword' => [
                         [
                             'type' => 'BROAD',
-                            'value' => implode(',+', $this->query),
+                            'value' => $this->getSearchTerms(),
                         ],
                     ],
                 ],
             ],
-            'keywordType' => $this->category === 0 ? 'QUERY' : 'ENTITY',
+            'keywordType' => 'QUERY',
             'metric' => $this->metrics,
             'trendinessSettings' => [
                 'compareTime' => $this->compareTime,

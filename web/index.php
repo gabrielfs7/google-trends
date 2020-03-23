@@ -1,13 +1,13 @@
 <?php
 require __DIR__ . '/../vendor/autoload.php';
 
-use GSoares\GoogleTrends\Search;
+use GSoares\GoogleTrends\Builder\RelatedSearchUrlBuilder;
+use GSoares\GoogleTrends\Search\RelatedSearch;
 
 header('Content-Type', 'application/json');
 
 try {
-    $search = new Search();
-    $search->getQueryBuilder()
+    $relatedSearchUrlBuilder = (new RelatedSearchUrlBuilder())
         ->withToken($_GET['token'] ?? '')
         ->withCategory((int)($_GET['category'] ?? 44)) //Beauty & Fitness
         ->withWord($_GET['word'] ?? 'hair')
@@ -15,7 +15,11 @@ try {
         ->withTopMetrics()
         ->withRisingMetrics();
 
-    echo json_encode($search->searchRelatedTerms()->jsonSerialize());
+    echo json_encode(
+        (new RelatedSearch())
+            ->search($relatedSearchUrlBuilder)
+            ->jsonSerialize()
+    );
 } catch (Throwable $exception) {
     echo json_encode(
         [
