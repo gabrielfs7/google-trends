@@ -20,7 +20,7 @@ class ExploreResultCollection
     }
 
     /**
-     * @return KeywordQueryResult[]
+     * @return RelatedResult[]
      */
     public function getResults(): array
     {

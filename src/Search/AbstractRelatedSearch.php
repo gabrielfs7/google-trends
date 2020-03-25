@@ -3,26 +3,27 @@
 namespace GSoares\GoogleTrends\Search;
 
 use GSoares\GoogleTrends\Error\GoogleTrendsException;
-use GSoares\GoogleTrends\Result\KeywordQueryResult;
-use GSoares\GoogleTrends\Result\KeywordQueryResultCollection;
+use GSoares\GoogleTrends\Result\RelatedResult;
+use GSoares\GoogleTrends\Result\ExploreResultCollection;
+use GSoares\GoogleTrends\Result\RelatedResultCollection;
 
 /**
  * @author Gabriel Felipe Soares <gabrielfs7@gmail.com>
  */
-class RelatedQuerySearch
+abstract class AbstractRelatedSearch
 {
-    private const TRENDS_URL = 'https://trends.google.com';
-    private const RELATED_SEARCH_URL = 'https://trends.google.com/trends/api/widgetdata/relatedsearches';
+    protected const TRENDS_URL = 'https://trends.google.com';
+    protected const RELATED_SEARCH_URL = 'https://trends.google.com/trends/api/widgetdata/relatedsearches';
 
     /**
      * @var ExploreSearch
      */
-    private $exploreSearch;
+    protected $exploreSearch;
 
     /**
      * @var SearchRequest
      */
-    private $searchRequest;
+    protected $searchRequest;
 
     public function __construct(ExploreSearch $exploreSearch = null, SearchRequest $searchRequest = null)
     {
@@ -33,13 +34,13 @@ class RelatedQuerySearch
     /**
      * @param SearchFilter $searchFilter
      *
-     * @return KeywordQueryResultCollection
+     * @return RelatedResultCollection
      *
      * @throws GoogleTrendsException
      */
-    public function search(SearchFilter $searchFilter): KeywordQueryResultCollection
+    public function search(SearchFilter $searchFilter): RelatedResultCollection
     {
-        $this->setUpToken($searchFilter);
+        $searchFilter->withToken($this->getToken($this->exploreSearch->search($searchFilter)));
 
         $searchUrl = $this->buildQuery($searchFilter);
 
@@ -58,42 +59,30 @@ class RelatedQuerySearch
 
         foreach ($responseDecoded['default']['rankedList'] as $row) {
             foreach ($row['rankedKeyword'] ?? [] as $rank) {
-                if (!isset($rank['query'], $rank['value'], $rank['link'])) {
-                    throw new GoogleTrendsException(
-                        sprintf(
-                            'Google ranked list does not contain all keys. Only has: %s',
-                            implode(', ', array_keys($rank))
-                        )
-                    );
-                }
-
-                $results[] = new KeywordQueryResult(
-                    (string)$rank['query'],
-                    (bool)($rank['hasData'] ?? false),
-                    (int)$rank['value'],
-                    self::TRENDS_URL . (string)$rank['link']
-                );
+                $results[] = $this->createResult($rank);
             }
         }
 
-        return new KeywordQueryResultCollection($searchUrl, ...$results);
+        return new RelatedResultCollection($searchUrl, ...$results);
     }
 
     /**
-     * @param SearchFilter $searchFilter
+     * @param array $data
      *
-     * @return void
+     * @return RelatedResult
      *
      * @throws GoogleTrendsException
      */
-    private function setUpToken(SearchFilter $searchFilter): void
-    {
-        $searchFilter->withToken(
-            $this->exploreSearch->search($searchFilter)
-                ->getRelatedQueriesResult()
-                ->getToken()
-        );
-    }
+    abstract protected function createResult(array $data): RelatedResult;
+
+    /**
+     * @param ExploreResultCollection $resultCollection
+     *
+     * @return string
+     *
+     * @throws GoogleTrendsException
+     */
+    abstract protected function getToken(ExploreResultCollection $resultCollection): string;
 
     private function buildQuery(SearchFilter $searchFilter): string
     {
@@ -113,7 +102,7 @@ class RelatedQuerySearch
                     ],
                 ],
             ],
-            'keywordType' => 'QUERY',
+            'keywordType' => $this->getKeywordType(),
             'metric' => $searchFilter->getMetrics(),
             'trendinessSettings' => [
                 'compareTime' => $searchFilter->getCompareTime(),
@@ -149,4 +138,6 @@ class RelatedQuerySearch
 
         return self::RELATED_SEARCH_URL . '?' . $queryString;
     }
+
+    abstract protected function getKeywordType(): string;
 }

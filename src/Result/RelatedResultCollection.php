@@ -7,24 +7,24 @@ use JsonSerializable;
 /**
  * @author Gabriel Felipe Soares <gabrielfs7@gmail.com>
  */
-class KeywordQueryResultCollection implements JsonSerializable
+class RelatedResultCollection implements JsonSerializable
 {
     /**
      * @var string
      */
-    public $searchUrl;
+    private $searchUrl;
 
     /**
-     * @var KeywordQueryResult[]
+     * @var RelatedResult[]
      */
-    public $results;
+    private $results;
 
     /**
      * @var int
      */
-    public $totalResults;
+    private $totalResults;
 
-    public function __construct(string $searchUrl, KeywordQueryResult ...$terms)
+    public function __construct(string $searchUrl, RelatedResult ...$terms)
     {
         $this->searchUrl = $searchUrl;
         $this->results = $terms;
@@ -37,7 +37,7 @@ class KeywordQueryResultCollection implements JsonSerializable
     }
 
     /**
-     * @return KeywordQueryResult[]
+     * @return RelatedResult[]
      */
     public function getResults(): array
     {

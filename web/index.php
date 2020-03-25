@@ -1,8 +1,9 @@
 <?php
 require __DIR__ . '/../vendor/autoload.php';
 
+use GSoares\GoogleTrends\Search\RelatedTopicsSearch;
 use GSoares\GoogleTrends\Search\SearchFilter;
-use GSoares\GoogleTrends\Search\RelatedQuerySearch;
+use GSoares\GoogleTrends\Search\RelatedQueriesSearch;
 
 header('Content-Type', 'application/json');
 
@@ -24,11 +25,23 @@ try {
         ->withTopMetrics()
         ->withRisingMetrics();
 
-    echo json_encode(
-        (new RelatedQuerySearch())
+    $searchType = $_GET['searchType'] ?? 'query';
+
+    $result = null;
+
+    if ($searchType === 'query') {
+        $result = (new RelatedQueriesSearch())
             ->search($relatedSearchUrlBuilder)
-            ->jsonSerialize()
-    );
+            ->jsonSerialize();
+    }
+
+    if ($searchType === 'entity') {
+        $result = (new RelatedTopicsSearch())
+            ->search($relatedSearchUrlBuilder)
+            ->jsonSerialize();
+    }
+
+    echo json_encode($result);
 } catch (Throwable $exception) {
     echo json_encode(
         [

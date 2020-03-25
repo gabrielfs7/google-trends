@@ -2,20 +2,74 @@
 
 Easy way to request search on Google Trends and get a standard response in JSON or PHP DTO.
 
-- Currently supports only related search terms.
+## Advantages on using this API
+
+- Get standard response that can be easily imported to your BI system.
+- No need to have a google account.
+- No need for web scraping data from Google Trends UI.
+- We deal with Google request token handling for you.
+- Allows you to create custom reports that better fit to your business. 
+
+## Current support
+
+- Related topics Search.
+- Related queries Search.
+- Search by categories.
+- Search by location.
+- Language support.
+- Includes top or rising metrics.
+- Search type:
+  - Web
+  - Image
+  - News
+  - Youtube
+  - Google Shopping
+
+### TODO
+
+- Add support for "time series" results.
+- Add support for "interests by region" results.
 
 ## Usage
 
+Only 3 simple steps!
+
+1) Create a `SearchFilter` with your restrictions.
+2) Chose the type of search you want to do.
+3) Execute the search and get the results!
+
 ```php
 <?php
-$results = (new GSoares\GoogleTrends\Search())
-    ->setCategory(GSoares\GoogleTrends\Category::BEAUTY_AND_FITNESS)
-    ->setLocation('US')
-    ->setLanguage('en-US')
-    ->addWord('hair')
-    ->setLastDays(30) // allowed: 7, 30, 90, 365
-    ->searchRelatedTerms()
-    ->jsonSerialize();
+use GSoares\GoogleTrends\Search\RelatedTopicsSearch;
+use GSoares\GoogleTrends\Search\SearchFilter;
+use GSoares\GoogleTrends\Search\RelatedQueriesSearch;
+
+$relatedSearchUrlBuilder = (new SearchFilter())
+        ->withCategory((int)($_GET['category'] ?? 0)) //All categories
+        ->withSearchTerm($_GET['searchTerm'][0] ?? 'google')
+        ->withLocation($_GET['location'] ?? 'US')
+        ->withinInterval(
+            new DateTimeImmutable($_GET['from'] ?? 'now -7 days'),
+            new DateTimeImmutable($_GET['to'] ?? 'now')
+        )
+        ->withLanguage($_GET['language'] ?? 'en-US')
+        ->considerWebSearch()
+        # ->considerImageSearch() // Consider only image search
+        # ->considerNewsSearch() // Consider only news search
+        # ->considerYoutubeSearch() // Consider only youtube search
+        # ->considerGoogleShoppingSearch() // Consider only Google Shopping search
+        ->withTopMetrics()
+        ->withRisingMetrics();
+
+    // Get related query results
+    $result = (new RelatedQueriesSearch())
+        ->search($relatedSearchUrlBuilder)
+        ->jsonSerialize();
+
+    // Get related topics results
+    $result = (new RelatedTopicsSearch())
+        ->search($relatedSearchUrlBuilder)
+        ->jsonSerialize();
     
 /* $results = (string) 
 {  
@@ -45,6 +99,10 @@ $results = (new GSoares\GoogleTrends\Search())
 ## Installation
 
 1. Project available in https://packagist.org/packages/gabrielfs7/google-trends to install via composer.
+
+## Example
+
+You can access an working example [here](/web/index.php).
 
 ## Google Categories
 

@@ -7,7 +7,7 @@ use JsonSerializable;
 /**
  * @author Gabriel Felipe Soares <gabrielfs7@gmail.com>
  */
-class KeywordQueryResult implements JsonSerializable
+class RelatedResult implements JsonSerializable
 {
     /**
      * @var string
