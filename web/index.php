@@ -8,7 +8,6 @@ header('Content-Type', 'application/json');
 
 try {
     $relatedSearchUrlBuilder = (new RelatedSearchUrlBuilder())
-        ->withToken($_GET['token'] ?? '')
         ->withCategory((int)($_GET['category'] ?? 0)) //All categories
         ->withSearchTerm($_GET['searchTerm'][0] ?? 'google')
         ->withLocation($_GET['location'] ?? 'US')

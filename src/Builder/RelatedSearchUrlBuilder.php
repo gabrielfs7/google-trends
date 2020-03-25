@@ -67,15 +67,23 @@ class RelatedSearchUrlBuilder
      */
     private $lastDays;
 
-    public function __construct()
+    /**
+     * @var string
+     */
+    private $searchType;
+
+    public function __construct(DateTimeImmutable $currentDate = null)
     {
         $this->searchTerm = [];
         $this->metrics = [];
 
+        $currentDate = $currentDate ?? new DateTimeImmutable();
+
         $this->withinLastDays(self::DEFAULT_LAST_DAYS)
             ->withLanguage(self::DEFAULT_LANG)
             ->withLocation(self::DEFAULT_COUNTRY)
-            ->withinInterval((new DateTimeImmutable())->modify('-1 year'), new DateTimeImmutable());
+            ->withinInterval($currentDate->modify('-1 year'), $currentDate)
+            ->considerWebSearch();
     }
 
     public function withToken(string $token): self
@@ -121,6 +129,46 @@ class RelatedSearchUrlBuilder
         $this->lastDays = 'today ' . $pattern;
 
         return $this;
+    }
+
+    public function considerImageSearch(): self
+    {
+        $this->searchType = 'images';
+
+        return $this;
+    }
+
+    public function considerGoogleShoppingSearch(): self
+    {
+        $this->searchType = 'frgoogle';
+
+        return $this;
+    }
+
+    public function considerYoutubeSearch(): self
+    {
+        $this->searchType = 'youtube';
+
+        return $this;
+    }
+
+    public function considerNewsSearch(): self
+    {
+        $this->searchType = 'news';
+
+        return $this;
+    }
+
+    public function considerWebSearch(): self
+    {
+        $this->searchType = '';
+
+        return $this;
+    }
+
+    public function getSearchType(): string
+    {
+        return $this->searchType;
     }
 
     public function withRisingMetrics(): self
@@ -214,7 +262,7 @@ class RelatedSearchUrlBuilder
                 'compareTime' => $this->compareTime,
             ],
             'requestOptions' => [
-                'property' => '',
+                'property' => $this->searchType,
                 'backend' => 'IZG',
                 'category' => $this->category,
             ],

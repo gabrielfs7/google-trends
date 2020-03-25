@@ -30,7 +30,7 @@ class ExploreUrlBuilder
                 ]
             ],
             'category' => $this->searchUrlBuilder->getCategory(),
-            'property' => '',
+            'property' => $this->searchUrlBuilder->getSearchType(),
         ];
 
         $query = [
