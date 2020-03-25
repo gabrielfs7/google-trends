@@ -11,7 +11,10 @@ try {
         ->withCategory((int)($_GET['category'] ?? 0)) //All categories
         ->withSearchTerm($_GET['searchTerm'][0] ?? 'google')
         ->withLocation($_GET['location'] ?? 'US')
-        ->withinLastDays($_GET['lastDays'] ?? 365)
+        ->withinInterval(
+            new DateTimeImmutable($_GET['from'] ?? 'now -7 days'),
+            new DateTimeImmutable($_GET['to'] ?? 'now')
+        )
         ->withLanguage($_GET['language'] ?? 'en-US')
         ->withTopMetrics()
         ->withRisingMetrics();

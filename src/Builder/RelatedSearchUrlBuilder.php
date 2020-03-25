@@ -11,16 +11,9 @@ use GSoares\GoogleTrends\Error\GoogleTrendsException;
  */
 class RelatedSearchUrlBuilder
 {
-    private const DEFAULT_LAST_DAYS = 7;
     private const DEFAULT_LANG = 'en-US';
     private const DEFAULT_COUNTRY = 'US';
     private const RELATED_SEARCH_URL = 'https://trends.google.com/trends/api/widgetdata/relatedsearches';
-    private const ALLOWED_DAYS = [
-        7,
-        30,
-        90,
-        365,
-    ];
 
     /**
      * @var string
@@ -65,24 +58,26 @@ class RelatedSearchUrlBuilder
     /**
      * @var string
      */
-    private $lastDays;
+    private $originalTimeRangeForExploreUrl;
 
     /**
      * @var string
      */
     private $searchType;
 
+    /** @var DateTimeImmutable */
+    private $currentDate;
+
     public function __construct(DateTimeImmutable $currentDate = null)
     {
         $this->searchTerm = [];
         $this->metrics = [];
 
-        $currentDate = $currentDate ?? new DateTimeImmutable();
+        $this->currentDate = $currentDate ?? new DateTimeImmutable();
 
-        $this->withinLastDays(self::DEFAULT_LAST_DAYS)
+        $this->withinInterval($this->currentDate->modify('-1 month'), $this->currentDate)
             ->withLanguage(self::DEFAULT_LANG)
             ->withLocation(self::DEFAULT_COUNTRY)
-            ->withinInterval($currentDate->modify('-1 year'), $currentDate)
             ->considerWebSearch();
     }
 
@@ -95,38 +90,28 @@ class RelatedSearchUrlBuilder
 
     public function withinInterval(DateTimeImmutable $from, DateTimeImmutable $to): self
     {
-        $compareFrom = $from->modify('-1 year -2 days');
-        $compareTo = $to->modify('-1 year -1 days');
-
-        $this->time = $from->format('Y-m-d') . ' ' . $to->format('Y-m-d');
-        $this->compareTime = $compareFrom->format('Y-m-d') . ' ' . $compareTo->format('Y-m-d');
-
-        return $this;
-    }
-
-    /**
-     * @param int $lastDays
-     *
-     * @return $this
-     *
-     * @throws GoogleTrendsException
-     */
-    public function withinLastDays(int $lastDays): self
-    {
-        if (!in_array($lastDays, self::ALLOWED_DAYS)) {
+        if ($from >= $to || $from->format('Ymd') === $to->format('Ymd')) {
             throw new GoogleTrendsException(
-                sprintf('Allowed days: %s. Supplied: %s',
-                    implode(', ', self::ALLOWED_DAYS),
-                    $lastDays
+                sprintf('Invalid interval. From %s to %s',
+                    $from->format(DATE_ATOM),
+                    $to->format(DATE_ATOM)
                 )
             );
         }
 
-        $pattern = $lastDays === 7
-            ? $lastDays . '-d'
-            : ceil(bcdiv((string)$lastDays, '30')) . '-m';
+        $from = $from->setTime(0, 0, 0);
+        $to = $to->setTime(23, 59, 50);
 
-        $this->lastDays = 'today ' . $pattern;
+        $this->time = $from->format('Y-m-d') . ' ' . $to->format('Y-m-d');
+        $this->originalTimeRangeForExploreUrl = $this->time;
+
+        $daysDifference = (int)ceil(($to->getTimestamp() - $from->getTimestamp()) / 60 / 60 / 24);
+
+        $this->compareTime = $from->modify('-' . $daysDifference . ' days')
+                ->format('Y-m-d')
+            . ' '
+            . $to->modify('-' . $daysDifference . ' days')
+                ->format('Y-m-d');
 
         return $this;
     }
@@ -164,11 +149,6 @@ class RelatedSearchUrlBuilder
         $this->searchType = '';
 
         return $this;
-    }
-
-    public function getSearchType(): string
-    {
-        return $this->searchType;
     }
 
     public function withRisingMetrics(): self
@@ -228,14 +208,19 @@ class RelatedSearchUrlBuilder
         return $this->category;
     }
 
-    public function getLastDays(): string
+    public function getOriginalTimeRangeForExploreUrl(): string
     {
-        return $this->lastDays;
+        return $this->originalTimeRangeForExploreUrl;
     }
 
     public function getSearchTerm(): string
     {
         return $this->searchTerm;
+    }
+
+    public function getSearchType(): string
+    {
+        return $this->searchType;
     }
 
     public function build(): string
@@ -246,7 +231,7 @@ class RelatedSearchUrlBuilder
                     'country' => $this->location,
                 ],
                 'time' => $this->time,
-                'originalTimeRangeForExploreUrl' => $this->lastDays,
+                'originalTimeRangeForExploreUrl' => $this->originalTimeRangeForExploreUrl,
                 'complexKeywordsRestriction' => [
                     'keyword' => [
                         [

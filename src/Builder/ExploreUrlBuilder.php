@@ -26,7 +26,7 @@ class ExploreUrlBuilder
                 [
                     'keyword' => $this->searchUrlBuilder->getSearchTerm(),
                     'geo' => $this->searchUrlBuilder->getLocation(),
-                    'time' => $this->searchUrlBuilder->getLastDays()
+                    'time' => $this->searchUrlBuilder->getOriginalTimeRangeForExploreUrl()
                 ]
             ],
             'category' => $this->searchUrlBuilder->getCategory(),
