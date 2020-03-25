@@ -45,7 +45,7 @@ class RelatedSearchUrlBuilder
     /**
      * @var string
      */
-    private $terms;
+    private $searchTerm;
 
     /**
      * @var string
@@ -69,7 +69,7 @@ class RelatedSearchUrlBuilder
 
     public function __construct()
     {
-        $this->terms = [];
+        $this->searchTerm = [];
         $this->metrics = [];
 
         $this->withinLastDays(self::DEFAULT_LAST_DAYS)
@@ -144,23 +144,23 @@ class RelatedSearchUrlBuilder
         return $this;
     }
 
-    public function withCategory(int $category)
+    public function withCategory(int $category): self
     {
         $this->category = $category;
 
         return $this;
     }
 
-    public function withLocation(string $location)
+    public function withLocation(string $location): self
     {
         $this->location = $location;
 
         return $this;
     }
 
-    public function withWord(string $word)
+    public function withSearchTerm(string $searchTerm): self
     {
-        $this->terms[$word] = $word;
+        $this->searchTerm = $searchTerm;
 
         return $this;
     }
@@ -185,9 +185,9 @@ class RelatedSearchUrlBuilder
         return $this->lastDays;
     }
 
-    public function getSearchTerms(): string
+    public function getSearchTerm(): string
     {
-        return implode(',', $this->terms);
+        return $this->searchTerm;
     }
 
     public function build(): string
@@ -203,7 +203,7 @@ class RelatedSearchUrlBuilder
                     'keyword' => [
                         [
                             'type' => 'BROAD',
-                            'value' => $this->getSearchTerms(),
+                            'value' => $this->searchTerm,
                         ],
                     ],
                 ],

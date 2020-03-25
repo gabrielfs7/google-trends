@@ -24,7 +24,7 @@ class ExploreUrlBuilder
         $request = [
             'comparisonItem' => [
                 [
-                    'keyword' => $this->searchUrlBuilder->getSearchTerms(),
+                    'keyword' => $this->searchUrlBuilder->getSearchTerm(),
                     'geo' => $this->searchUrlBuilder->getLocation(),
                     'time' => $this->searchUrlBuilder->getLastDays()
                 ]
