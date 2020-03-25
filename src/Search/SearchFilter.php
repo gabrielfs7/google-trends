@@ -1,19 +1,17 @@
 <?php declare(strict_types=1);
 
-namespace GSoares\GoogleTrends\Builder;
+namespace GSoares\GoogleTrends\Search;
 
 use DateTimeImmutable;
-use DateTimeInterface;
 use GSoares\GoogleTrends\Error\GoogleTrendsException;
 
 /**
  * @author Gabriel Felipe Soares <gabrielfs7@gmail.com>
  */
-class RelatedSearchUrlBuilder
+class SearchFilter
 {
     private const DEFAULT_LANG = 'en-US';
     private const DEFAULT_COUNTRY = 'US';
-    private const RELATED_SEARCH_URL = 'https://trends.google.com/trends/api/widgetdata/relatedsearches';
 
     /**
      * @var string
@@ -65,7 +63,14 @@ class RelatedSearchUrlBuilder
      */
     private $searchType;
 
-    /** @var DateTimeImmutable */
+    /**
+     * @var string
+     */
+    private $keywordType;
+
+    /**
+     * @var DateTimeImmutable
+     */
     private $currentDate;
 
     public function __construct(DateTimeImmutable $currentDate = null)
@@ -193,6 +198,11 @@ class RelatedSearchUrlBuilder
         return $this;
     }
 
+    public function getToken(): string
+    {
+        return $this->token;
+    }
+
     public function getLocation(): string
     {
         return $this->location;
@@ -223,58 +233,18 @@ class RelatedSearchUrlBuilder
         return $this->searchType;
     }
 
-    public function build(): string
+    public function getTime(): string
     {
-        $request = [
-            'restriction' => [
-                'geo' => [
-                    'country' => $this->location,
-                ],
-                'time' => $this->time,
-                'originalTimeRangeForExploreUrl' => $this->originalTimeRangeForExploreUrl,
-                'complexKeywordsRestriction' => [
-                    'keyword' => [
-                        [
-                            'type' => 'BROAD',
-                            'value' => $this->searchTerm,
-                        ],
-                    ],
-                ],
-            ],
-            'keywordType' => 'QUERY',
-            'metric' => $this->metrics,
-            'trendinessSettings' => [
-                'compareTime' => $this->compareTime,
-            ],
-            'requestOptions' => [
-                'property' => $this->searchType,
-                'backend' => 'IZG',
-                'category' => $this->category,
-            ],
-            'language' => 'en',
-        ];
+        return $this->time;
+    }
 
-        $query = [
-            'hl' => $this->language,
-            'tz' => '-60',
-            'req' => json_encode($request),
-            'token' => $this->token
-        ];
+    public function getCompareTime(): string
+    {
+        return $this->compareTime;
+    }
 
-        $queryString = str_replace(
-            [
-                '%3A',
-                '%2C',
-                '%2B'
-            ],
-            [
-                ':',
-                ',',
-                '+',
-            ],
-            http_build_query($query)
-        );
-
-        return self::RELATED_SEARCH_URL . '?' . $queryString;
+    public function getMetrics(): array
+    {
+        return $this->metrics;
     }
 }

@@ -2,6 +2,8 @@
 
 namespace GSoares\GoogleTrends\Result;
 
+use GSoares\GoogleTrends\Error\GoogleTrendsException;
+
 /**
  * @author Gabriel Felipe Soares <gabrielfs7@gmail.com>
  */
@@ -18,14 +20,19 @@ class ExploreResultCollection
     }
 
     /**
-     * @return KeywordResult[]
+     * @return KeywordQueryResult[]
      */
     public function getResults(): array
     {
         return $this->results;
     }
 
-    public function getRelatedQueriesResult(): ?ExploreResult
+    /**
+     * @return ExploreResult
+     *
+     * @throws GoogleTrendsException
+     */
+    public function getRelatedQueriesResult(): ExploreResult
     {
         foreach ($this->results as $result) {
             if ($result->isRelatedQueriesSearch()) {
@@ -33,6 +40,22 @@ class ExploreResultCollection
             }
         }
 
-        return null;
+        throw new GoogleTrendsException('No token available!');
+    }
+
+    /**
+     * @return ExploreResult
+     *
+     * @throws GoogleTrendsException
+     */
+    public function getRelatedTopicsResult(): ExploreResult
+    {
+        foreach ($this->results as $result) {
+            if ($result->isRelatedTopicsSearch()) {
+                return $result;
+            }
+        }
+
+        throw new GoogleTrendsException('No token available!');
     }
 }

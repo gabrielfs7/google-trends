@@ -7,7 +7,7 @@ use JsonSerializable;
 /**
  * @author Gabriel Felipe Soares <gabrielfs7@gmail.com>
  */
-class KeywordResult implements JsonSerializable
+class KeywordQueryResult implements JsonSerializable
 {
     /**
      * @var string
@@ -42,7 +42,7 @@ class KeywordResult implements JsonSerializable
         return $this->term;
     }
 
-    public function isHasData(): bool
+    public function hasData(): bool
     {
         return $this->hasData;
     }

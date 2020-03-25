@@ -33,13 +33,13 @@ class ExploreResult
         return $this->token;
     }
 
-    public function getId(): string
-    {
-        return $this->id;
-    }
-
     public function isRelatedQueriesSearch(): bool
     {
         return self::ID_RELATED_QUERIES === $this->id;
+    }
+
+    public function isRelatedTopicsSearch(): bool
+    {
+        return self::ID_RELATED_TOPICS === $this->id;
     }
 }

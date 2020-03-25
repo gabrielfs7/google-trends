@@ -2,7 +2,6 @@
 
 namespace GSoares\GoogleTrends\Search;
 
-use GSoares\GoogleTrends\Builder\ExploreUrlBuilder;
 use GSoares\GoogleTrends\Error\GoogleTrendsException;
 use GSoares\GoogleTrends\Result\ExploreResult;
 use GSoares\GoogleTrends\Result\ExploreResultCollection;
@@ -12,6 +11,8 @@ use GSoares\GoogleTrends\Result\ExploreResultCollection;
  */
 class ExploreSearch
 {
+    private const EXPLORE_URL = 'https://trends.google.com/trends/api/explore';
+
     /**
      * @var SearchRequest
      */
@@ -23,15 +24,15 @@ class ExploreSearch
     }
 
     /**
-     * @param ExploreUrlBuilder $exploreUrlBuilder
+     * @param SearchFilter $searchFilter
      *
      * @return ExploreResultCollection
      *
      * @throws GoogleTrendsException
      */
-    public function search(ExploreUrlBuilder $exploreUrlBuilder): ExploreResultCollection
+    public function search(SearchFilter $searchFilter): ExploreResultCollection
     {
-        $response = $this->searchRequest->search($exploreUrlBuilder->build());
+        $response = $this->searchRequest->search($this->buildUrl($searchFilter));
 
         $results = [];
 
@@ -52,5 +53,42 @@ class ExploreSearch
         }
 
         return new ExploreResultCollection(...$results);
+    }
+
+    private function buildUrl(SearchFilter $searchFilter): string
+    {
+        $request = [
+            'comparisonItem' => [
+                [
+                    'keyword' => $searchFilter->getSearchTerm(),
+                    'geo' => $searchFilter->getLocation(),
+                    'time' => $searchFilter->getOriginalTimeRangeForExploreUrl()
+                ]
+            ],
+            'category' => $searchFilter->getCategory(),
+            'property' => $searchFilter->getSearchType(),
+        ];
+
+        $query = [
+            'hl' => $searchFilter->getLanguage(),
+            'tz' => '-60',
+            'req' => json_encode($request),
+        ];
+
+        $queryString = str_replace(
+            [
+                '%3A',
+                '%2C',
+                '%2B'
+            ],
+            [
+                ':',
+                ',',
+                '+',
+            ],
+            http_build_query($query)
+        );
+
+        return self::EXPLORE_URL . '?' . $queryString;
     }
 }
