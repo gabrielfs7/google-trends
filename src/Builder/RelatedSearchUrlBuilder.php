@@ -93,10 +93,10 @@ class RelatedSearchUrlBuilder
         return $this;
     }
 
-    public function withinInterval(DateTimeInterface $from, DateTimeInterface $to): self
+    public function withinInterval(DateTimeImmutable $from, DateTimeImmutable $to): self
     {
-        $compareFrom = (new DateTimeImmutable($from->format('Y-m-d H:i:s')))->modify('-1 year -2 days');
-        $compareTo = (new DateTimeImmutable($to->format('Y-m-d H:i:s')))->modify('-1 year -1 days');
+        $compareFrom = $from->modify('-1 year -2 days');
+        $compareTo = $to->modify('-1 year -1 days');
 
         $this->time = $from->format('Y-m-d') . ' ' . $to->format('Y-m-d');
         $this->compareTime = $compareFrom->format('Y-m-d') . ' ' . $compareTo->format('Y-m-d');
