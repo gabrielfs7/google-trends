@@ -2,6 +2,7 @@
 
 namespace GSoares\GoogleTrends\Tests\Unit\Search;
 
+use Exception;
 use GSoares\GoogleTrends\Error\GoogleTrendsException;
 use GSoares\GoogleTrends\Search\SearchRequest;
 use GuzzleHttp\ClientInterface;
@@ -95,6 +96,20 @@ class SearchRequestTest extends TestCase
                 self::SEARCH_URL
             )
         );
+
+        $this->sut->search(self::SEARCH_URL);
+    }
+
+    public function testSearchWillThrowException(): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('request')
+            ->with('GET', self::SEARCH_URL, [])
+            ->willThrowException(new Exception('ERROR'));
+
+        $this->expectException(GoogleTrendsException::class);
+        $this->expectExceptionMessage('GoogleTrends error: ERROR');
 
         $this->sut->search(self::SEARCH_URL);
     }

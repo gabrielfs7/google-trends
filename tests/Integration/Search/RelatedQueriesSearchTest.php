@@ -11,7 +11,7 @@ use GSoares\GoogleTrends\Search\SearchFilter;
 use GSoares\GoogleTrends\Search\SearchRequest;
 use PHPUnit\Framework\TestCase;
 
-class ExploreSearchTest extends TestCase
+class RelatedQueriesSearchTest extends TestCase
 {
     /**
      * @var SearchRequest
