@@ -71,6 +71,8 @@ class SearchFilter
     public function __construct(DateTimeImmutable $currentDate = null)
     {
         $this->metrics = [];
+        $this->searchTerm = '';
+        $this->category = 0;
         $this->currentDate = $currentDate ?? new DateTimeImmutable();
 
         $this->withinInterval($this->currentDate->modify('-1 month'), $this->currentDate)

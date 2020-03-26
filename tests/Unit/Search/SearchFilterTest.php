@@ -36,6 +36,14 @@ class SearchFilterTest extends TestCase
             $this->sut->getSearchType()
         );
         $this->assertSame(
+            '',
+            $this->sut->getSearchTerm()
+        );
+        $this->assertSame(
+            0,
+            $this->sut->getCategory()
+        );
+        $this->assertSame(
             '2010-08-10 2010-09-09',
             $this->sut->getCompareTime()
         );
