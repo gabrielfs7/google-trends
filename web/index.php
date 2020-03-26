@@ -1,56 +1,52 @@
-<?php require __DIR__ . '/../vendor/autoload.php'; ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Google Trends - Analysis</title>
-</head>
-<body>
 <?php
+require __DIR__ . '/../vendor/autoload.php';
+
+use GSoares\GoogleTrends\Search\RelatedTopicsSearch;
+use GSoares\GoogleTrends\Search\SearchFilter;
+use GSoares\GoogleTrends\Search\RelatedQueriesSearch;
+
+header('Content-Type', 'application/json');
+
 try {
-$results = (new Gsoares\GoogleTrends\Search())
-    ->setCategory(Gsoares\GoogleTrends\Category::BEAUTY_AND_FITNESS)
-    ->setLocation('US')
-    ->setLanguage('en-US')
-    ->addWord(isset($_GET['word']) ? $_GET['word'] : 'hair')
-    ->setLastDays(90)
-    ->search();
-?>
-<h1>Google Trends - Results</h1>
-<table border="1">
-    <thead>
-    <th>TOTAL</th>
-    <th>URL</th>
-    </thead>
-    <tbody>
-    <td><?=$results->totalResults ?></td>
-    <td><a href="<?=$results->searchUrl ?>"><?=$results->searchUrl ?></a></td>
-    </tbody>
-</table>
-<br/>
-<br/>
-<table border="1">
-    <thead>
-    <th>Term</th>
-    <th>Ranking</th>
-    <th>Search URL</th>
-    <th>Search Image URL</th>
-    <th>Trends URL</th>
-    </thead>
-    <tbody>
-    <?php foreach ($results->results as $term) { ?>
-    <td><?=$term->term ?></td>
-    <td><?=$term->ranking ?>%</td>
-    <td><a href="<?=$term->searchUrl ?>"><?php echo $term->searchUrl ?></a></td>
-    <td><a href="<?=$term->searchImageUrl ?>"><?php echo $term->searchImageUrl ?></a></td>
-    <td><a href="<?=$term->trendsUrl ?>"><?php echo $term->trendsUrl ?></a></td>
-    </tbody>
-    <?php } ?>
-</table>
-<?php
-} catch (\Exception $e) {
-    echo '<h1>Google Trends - ERROR</h1>';
-    echo $e->getMessage();
+    $relatedSearchUrlBuilder = (new SearchFilter())
+        ->withCategory((int)($_GET['category'] ?? 0)) //All categories
+        ->withSearchTerm($_GET['searchTerm'][0] ?? 'google')
+        ->withLocation($_GET['location'] ?? 'US')
+        ->withinInterval(
+            new DateTimeImmutable($_GET['from'] ?? 'now -7 days'),
+            new DateTimeImmutable($_GET['to'] ?? 'now')
+        )
+        ->withLanguage($_GET['language'] ?? 'en-US')
+        ->considerWebSearch()
+        # ->considerImageSearch() // Consider only image search
+        # ->considerNewsSearch() // Consider only news search
+        # ->considerYoutubeSearch() // Consider only youtube search
+        # ->considerGoogleShoppingSearch() // Consider only Google Shopping search
+        ->withTopMetrics()
+        ->withRisingMetrics();
+
+    $searchType = $_GET['searchType'] ?? 'query';
+
+    $result = null;
+
+    if ($searchType === 'query') {
+        $result = (new RelatedQueriesSearch())
+            ->search($relatedSearchUrlBuilder)
+            ->jsonSerialize();
+    }
+
+    if ($searchType === 'entity') {
+        $result = (new RelatedTopicsSearch())
+            ->search($relatedSearchUrlBuilder)
+            ->jsonSerialize();
+    }
+
+    echo json_encode($result);
+} catch (Throwable $exception) {
+    echo json_encode(
+        [
+            'exception' => get_class($exception),
+            'error' => $exception->getMessage()
+        ]
+    );
 }
-?>
-</body>
-</html>

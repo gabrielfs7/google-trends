@@ -1,34 +1,51 @@
 {
-    "name": "gabrielfs7/google-trends",
-    "description": "PHP Google Trends API",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Gabriel Felipe Soares",
-            "email": "gabrielfs7@gmail.com"
-        }
-    ],
-    "require": {
-        "php": ">=5.4",
-        "seostats/seostats": "dev-master"
-    },
-    "require-dev" : {
-        "phpunit/phpunit" : "4.0.x",
-        "squizlabs/php_codesniffer" : "*",
-        "phpmd/phpmd" : "*",
-        "guzzle/guzzle": "dev-master"
-    },
-    "autoload": {
-        "psr-4": {
-            "GSoares\\SeoAnalytics\\": "src/",
-            "": "src/"
-        },
-        "psr-0": {
-            "GSoares\\SeoAnalytics\\": "src/",
-            "": "src/"
-        }
-    },
-    "config": {
-        "bin-dir": "bin"
+  "name": "gabrielfs7/google-trends",
+  "description": "PHP Google Trends API",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Gabriel Felipe Soares",
+      "email": "gabrielfs7@gmail.com"
     }
+  ],
+  "require": {
+    "php": ">=7.2",
+    "ext-json": "*",
+    "guzzlehttp/guzzle": "^6.5"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^2.16",
+    "phpunit/phpunit": "^8.5",
+    "squizlabs/php_codesniffer": "^3.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "GSoares\\GoogleTrends\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "GSoares\\GoogleTrends\\Tests\\": "tests"
+    }
+  },
+  "scripts": {
+    "test": [
+      "bin/phpunit"
+    ],
+    "test-report": [
+      "bin/phpunit --coverage-html tests-report"
+    ],
+    "phpcbf": [
+      "bin/phpcbf src/",
+      "bin/phpcbf tests/"
+    ],
+    "php-cs-fixer": [
+      "bin/php-cs-fixer fix tests/",
+      "bin/php-cs-fixer fix src/"
+    ]
+  },
+  "config": {
+    "sort-packages": true,
+    "bin-dir": "bin"
+  }
 }
