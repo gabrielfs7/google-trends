@@ -1,6 +1,18 @@
 # Google Trends PHP API
 
-Easy way to request search on Google Trends and get a standard response in JSON or PHP DTO.
+[![Total Downloads](https://img.shields.io/packagist/dt/gabrielfs7/google-trends.svg?style=flat-square)](https://packagist.org/packages/gabrielfs7/google-trends) [![Latest Stable Version](https://img.shields.io/packagist/v/gabrielfs7/google-trends.svg?style=flat-square)](https://packagist.org/packages/gabrielfs7/google-trends)
+
+![Branch master](https://img.shields.io/badge/branch-master-brightgreen.svg?style=flat-square)
+[![Build Status](https://img.shields.io/travis/gabrielfs7/google-trends/master.svg?style=flat-square)](http://travis-ci.org/#!/gabrielfs7/google-trends)
+[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/gabrielfs7/google-trends/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/gabrielfs7/google-trends/?branch=master)
+[![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/gabrielfs7/google-trends/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/gabrielfs7/google-trends/?branch=master)
+
+A easier way to search on Google Trends and get a standard response in JSON or PHP DTO.
+
+## Dependencies
+
+- PHP 7.2+
+- PHP ext-json
 
 ## Advantages on using this API
 
@@ -70,8 +82,12 @@ $relatedSearchUrlBuilder = (new SearchFilter())
     $result = (new RelatedTopicsSearch())
         ->search($relatedSearchUrlBuilder)
         ->jsonSerialize();
-    
-/* $results = (string) 
+?>
+```
+
+JSON response example:
+
+```json
 {  
    "searchUrl":"http://www.google.com/trends/...",
    "totalResults":10,
@@ -87,26 +103,26 @@ $relatedSearchUrlBuilder = (new SearchFilter())
          "ranking":85,
          "hasData": true,
          "searchUrl":"http://trends.google.com/..."
-      },
-      {...}
+      }
    ]
 }
-*/
-
-?>
 ```
 
 ## Installation
 
-1. Project available in https://packagist.org/packages/gabrielfs7/google-trends to install via composer.
+The Project available on [Packagist](https://packagist.org/packages/gabrielfs7/google-trends) and you can install it using [Composer](http://getcomposer.org/):
+
+```shell script
+composer install gabrielfs7/google-trends
+```
 
 ## Example
 
-You can access an working example [here](/web/index.php).
+After install it you can access an working example [here](/web/index.php).
 
 ## Google Categories
 
-You can find the categories available on Google [here](/config/categories.json).
+You can find the categories available on Google [here](/misc/categories.json).
 
 ## Contributing
 
