@@ -1,4 +1,6 @@
 vendor/*
 bin/*
 .idea*
-/tests/report/
+/tests-report/
+/.php_cs.cache
+/.phpunit.result.cache
