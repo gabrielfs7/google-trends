@@ -16,8 +16,6 @@ use Throwable;
  */
 class SearchRequest
 {
-    private const MAX_TRIES = 5;
-
     /**
      * @var ClientInterface
      */
@@ -26,7 +24,26 @@ class SearchRequest
     /**
      * @var int
      */
+    private $maxTries;
+
+    /**
+     * @var int
+     */
     private $totalTries;
+
+    public function __construct(ClientInterface $guzzleClient = null)
+    {
+        $this->guzzleClient = $guzzleClient ?: new Client();
+        $this->maxTries = 5;
+        $this->totalTries = 0;
+    }
+
+    public function setMaxTries(int $maxTries): self
+    {
+        $this->maxTries = $maxTries;
+
+        return $this;
+    }
 
     /**
      * @param string $searchUrl
@@ -41,7 +58,7 @@ class SearchRequest
         } catch (ClientException $exception) {
             throw new GoogleTrendsException(
                 sprintf(
-                    'Request error with status code "%s" for url %s',
+                    'Request error with status code "%s" for url "%s"',
                     $exception->getResponse()->getStatusCode(),
                     $searchUrl
                 ),
@@ -72,12 +89,6 @@ class SearchRequest
         return $responseDecoded;
     }
 
-    public function __construct(ClientInterface $guzzleClient = null)
-    {
-        $this->guzzleClient = $guzzleClient ?: new Client();
-        $this->totalTries = 0;
-    }
-
     /**
      * @param string $searchUrl
      * @param array $options
@@ -94,7 +105,7 @@ class SearchRequest
             return $this->guzzleClient
                 ->request('GET', $searchUrl, $options);
         } catch (ClientException $exception) {
-            if ($exception->getResponse()->getStatusCode() === 429 && $this->totalTries < self::MAX_TRIES) {
+            if ($exception->getResponse()->getStatusCode() === 429 && $this->totalTries < $this->maxTries) {
                 return $this->doSearch(
                     $searchUrl,
                     [
