@@ -100,7 +100,8 @@ class SearchFilter
     {
         if ($from >= $to || $from->format('Ymd') === $to->format('Ymd')) {
             throw new GoogleTrendsException(
-                sprintf('Invalid interval. From %s to %s',
+                sprintf(
+                    'Invalid interval. From %s to %s',
                     $from->format(DATE_ATOM),
                     $to->format(DATE_ATOM)
                 )
@@ -115,10 +116,10 @@ class SearchFilter
         $daysDifference = (int)ceil(($to->getTimestamp() - $from->getTimestamp()) / 60 / 60 / 24);
 
         $this->compareTime = $from->modify('-' . $daysDifference . ' days')
-                ->format('Y-m-d')
+            ->format('Y-m-d')
             . ' '
             . $to->modify('-' . $daysDifference . ' days')
-                ->format('Y-m-d');
+            ->format('Y-m-d');
 
         return $this;
     }

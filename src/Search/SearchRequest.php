@@ -46,7 +46,7 @@ class SearchRequest
     }
 
     /**
-     * @param string $searchUrl
+     * @param  string $searchUrl
      * @return array
      *
      * @throws GoogleTrendsException
@@ -91,7 +91,7 @@ class SearchRequest
 
     /**
      * @param string $searchUrl
-     * @param array $options
+     * @param array  $options
      *
      * @return ResponseInterface
      *
