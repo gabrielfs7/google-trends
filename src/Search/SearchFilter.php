@@ -39,7 +39,7 @@ class SearchFilter
     private $searchTerm;
 
     /**
-     * @var string
+     * @var string[]
      */
     private $metrics;
 
