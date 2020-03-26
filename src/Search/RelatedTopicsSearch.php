@@ -21,7 +21,7 @@ class RelatedTopicsSearch extends AbstractRelatedSearch
      */
     protected function createResult(array $data): RelatedResult
     {
-        if (!isset($data['topic']['title'], $data['value'], $data['link'])) {
+        if (!isset($data['topic']['title'], $data['topic']['type'], $data['value'], $data['link'])) {
             throw new GoogleTrendsException(
                 sprintf(
                     'Google ranked list does not contain all keys. Only has: %s',
