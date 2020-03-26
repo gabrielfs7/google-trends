@@ -3,8 +3,8 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/gabrielfs7/google-trends.svg?style=flat-square)](https://packagist.org/packages/gabrielfs7/google-trends) [![Latest Stable Version](https://img.shields.io/packagist/v/gabrielfs7/google-trends.svg?style=flat-square)](https://packagist.org/packages/gabrielfs7/google-trends)
 
 ![Branch master](https://img.shields.io/badge/branch-master-brightgreen.svg?style=flat-square)
-[![Build Status](https://img.shields.io/travis/gabrielfs7/google-trends/master.svg?style=flat-square)](http://travis-ci.org/#!/gabrielfs7/google-trends)
-[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/gabrielfs7/google-trends/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/gabrielfs7/google-trends/?branch=master)
+[![Build Status](https://scrutinizer-ci.com/g/gabrielfs7/google-trends/badges/build.png?b=master)](https://scrutinizer-ci.com/g/gabrielfs7/google-trends/build-status/master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/gabrielfs7/google-trends/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/gabrielfs7/google-trends/?branch=master)
 [![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/gabrielfs7/google-trends/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/gabrielfs7/google-trends/?branch=master)
 
 A easier way to search on Google Trends and get a standard response in JSON or PHP DTO.
