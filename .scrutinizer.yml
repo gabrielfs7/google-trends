@@ -6,12 +6,12 @@ build:
     rabbitmq: false
     php:
       version: 7.2
-    tests:
-      override:
-        - command: bin/phpunit --coverage-clover=clover.xml
-          coverage:
-            file: clover.xml
-            format: php-clover
+  tests:
+    override:
+      - command: bin/phpunit --coverage-clover=clover.xml
+        coverage:
+          file: clover.xml
+          format: php-clover
 tools:
   php_sim: true
   php_pdepend: true
