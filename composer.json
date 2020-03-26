@@ -37,6 +37,7 @@
     ]
   },
   "config": {
+    "sort-packages": true,
     "bin-dir": "bin"
   }
 }

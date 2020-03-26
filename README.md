@@ -107,3 +107,7 @@ You can access an working example [here](/web/index.php).
 ## Google Categories
 
 You can find the categories available on Google [here](/config/categories.json).
+
+## Contributing
+
+I am really happy you can help with this project. If you are interest on how to contribute, please check [this page](./CONTRIBUTING.md).
