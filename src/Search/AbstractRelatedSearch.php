@@ -92,7 +92,7 @@ abstract class AbstractRelatedSearch
                     'country' => $searchFilter->getLocation(),
                 ],
                 'time' => $searchFilter->getTime(),
-                'originalTimeRangeForExploreUrl' => $searchFilter->getOriginalTimeRangeForExploreUrl(),
+                'originalTimeRangeForExploreUrl' => $searchFilter->getTime(),
                 'complexKeywordsRestriction' => [
                     'keyword' => [
                         [

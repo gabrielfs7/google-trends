@@ -62,7 +62,7 @@ class ExploreSearch
                 [
                     'keyword' => $searchFilter->getSearchTerm(),
                     'geo' => $searchFilter->getLocation(),
-                    'time' => $searchFilter->getOriginalTimeRangeForExploreUrl()
+                    'time' => $searchFilter->getTime()
                 ]
             ],
             'category' => $searchFilter->getCategory(),

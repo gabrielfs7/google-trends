@@ -23,6 +23,11 @@
       "GSoares\\GoogleTrends\\": "src"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "GSoares\\GoogleTrends\\Tests\\": "tests"
+    }
+  },
   "config": {
     "bin-dir": "bin"
   }

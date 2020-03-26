@@ -56,11 +56,6 @@ class SearchFilter
     /**
      * @var string
      */
-    private $originalTimeRangeForExploreUrl;
-
-    /**
-     * @var string
-     */
     private $searchType;
 
     /**
@@ -75,9 +70,7 @@ class SearchFilter
 
     public function __construct(DateTimeImmutable $currentDate = null)
     {
-        $this->searchTerm = [];
         $this->metrics = [];
-
         $this->currentDate = $currentDate ?? new DateTimeImmutable();
 
         $this->withinInterval($this->currentDate->modify('-1 month'), $this->currentDate)
@@ -93,6 +86,14 @@ class SearchFilter
         return $this;
     }
 
+    /**
+     * @param DateTimeImmutable $from
+     * @param DateTimeImmutable $to
+     *
+     * @return $this
+     *
+     * @throws GoogleTrendsException
+     */
     public function withinInterval(DateTimeImmutable $from, DateTimeImmutable $to): self
     {
         if ($from >= $to || $from->format('Ymd') === $to->format('Ymd')) {
@@ -108,7 +109,6 @@ class SearchFilter
         $to = $to->setTime(23, 59, 50);
 
         $this->time = $from->format('Y-m-d') . ' ' . $to->format('Y-m-d');
-        $this->originalTimeRangeForExploreUrl = $this->time;
 
         $daysDifference = (int)ceil(($to->getTimestamp() - $from->getTimestamp()) / 60 / 60 / 24);
 
@@ -216,11 +216,6 @@ class SearchFilter
     public function getCategory(): int
     {
         return $this->category;
-    }
-
-    public function getOriginalTimeRangeForExploreUrl(): string
-    {
-        return $this->originalTimeRangeForExploreUrl;
     }
 
     public function getSearchTerm(): string
