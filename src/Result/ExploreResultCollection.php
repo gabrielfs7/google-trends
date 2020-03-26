@@ -40,7 +40,7 @@ class ExploreResultCollection
             }
         }
 
-        throw new GoogleTrendsException('No token available!');
+        throw new GoogleTrendsException('No explore result available for related queries!');
     }
 
     /**
@@ -56,6 +56,6 @@ class ExploreResultCollection
             }
         }
 
-        throw new GoogleTrendsException('No token available!');
+        throw new GoogleTrendsException('No explore result available for related topics!');
     }
 }

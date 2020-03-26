@@ -60,10 +60,10 @@ class RelatedResult implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            'term' => $this->term,
-            'hasData' => $this->hasData,
-            'ranking' => $this->ranking,
-            'searchUrl' => $this->searchUrl,
+            'term' => $this->getTerm(),
+            'hasData' => $this->hasData(),
+            'ranking' => $this->getRanking(),
+            'searchUrl' => $this->getSearchUrl(),
         ];
     }
 }

@@ -55,9 +55,9 @@ class RelatedResultCollection implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            'searchUrl' => $this->searchUrl,
-            'totalResults' => $this->totalResults,
-            'results' => $this->results,
+            'searchUrl' => $this->getSearchUrl(),
+            'totalResults' => $this->getTotalResults(),
+            'results' => $this->getResults(),
         ];
     }
 }
