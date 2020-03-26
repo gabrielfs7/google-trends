@@ -28,6 +28,14 @@
       "GSoares\\GoogleTrends\\Tests\\": "tests"
     }
   },
+  "scripts": {
+    "test-unit": [
+      "bin/phpunit"
+    ],
+    "test-unit-report": [
+      "bin/phpunit --coverage-html tests/report"
+    ]
+  },
   "config": {
     "bin-dir": "bin"
   }
