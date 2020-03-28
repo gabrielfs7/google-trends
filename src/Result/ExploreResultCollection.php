@@ -58,4 +58,20 @@ class ExploreResultCollection
 
         throw new GoogleTrendsException('No explore result available for related topics!');
     }
+
+    /**
+     * @return ExploreResult
+     *
+     * @throws GoogleTrendsException
+     */
+    public function getInterestOverTimeResult(): ExploreResult
+    {
+        foreach ($this->results as $result) {
+            if ($result->isInterestOverTimeSearch()) {
+                return $result;
+            }
+        }
+
+        throw new GoogleTrendsException('No explore result available for interest over time!');
+    }
 }

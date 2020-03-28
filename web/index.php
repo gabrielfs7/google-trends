@@ -1,6 +1,7 @@
 <?php
 require __DIR__ . '/../vendor/autoload.php';
 
+use GSoares\GoogleTrends\Search\InterestOverTimeSearch;
 use GSoares\GoogleTrends\Search\RelatedTopicsSearch;
 use GSoares\GoogleTrends\Search\SearchFilter;
 use GSoares\GoogleTrends\Search\RelatedQueriesSearch;
@@ -27,7 +28,7 @@ try {
 
     $searchType = $_GET['searchType'] ?? 'query';
 
-    $result = null;
+    $result = [];
 
     if ($searchType === 'query') {
         $result = (new RelatedQueriesSearch())
@@ -35,8 +36,14 @@ try {
             ->jsonSerialize();
     }
 
-    if ($searchType === 'entity') {
+    if ($searchType === 'topic') {
         $result = (new RelatedTopicsSearch())
+            ->search($relatedSearchUrlBuilder)
+            ->jsonSerialize();
+    }
+
+    if ($searchType === 'interestOverTime') {
+        $result = (new InterestOverTimeSearch())
             ->search($relatedSearchUrlBuilder)
             ->jsonSerialize();
     }

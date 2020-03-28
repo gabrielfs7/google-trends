@@ -40,32 +40,24 @@ A easier way to search on Google Trends and get a standard response in JSON or P
 
 ### TODO
 
-- Add support for "time series" results.
 - Add support for "interests by region" results.
 
 ## Usage
 
-Only 3 simple steps!
+Only a few steps!
 
-1) Create a `SearchFilter` with your restrictions.
-2) Chose the type of search you want to do.
-3) Execute the search and get the results!
+### 1) Create a `SearchFilter` with your restrictions
 
 ```php
-<?php
-use GSoares\GoogleTrends\Search\RelatedTopicsSearch;
-use GSoares\GoogleTrends\Search\SearchFilter;
-use GSoares\GoogleTrends\Search\RelatedQueriesSearch;
-
-$relatedSearchUrlBuilder = (new SearchFilter())
-        ->withCategory((int)($_GET['category'] ?? 0)) //All categories
-        ->withSearchTerm($_GET['searchTerm'][0] ?? 'google')
-        ->withLocation($_GET['location'] ?? 'US')
+$searchFilter = (new GSoares\GoogleTrends\Search\SearchFilter())
+        ->withCategory(0) //All categories
+        ->withSearchTerm('google')
+        ->withLocation('US')
         ->withinInterval(
-            new DateTimeImmutable($_GET['from'] ?? 'now -7 days'),
-            new DateTimeImmutable($_GET['to'] ?? 'now')
+            new DateTimeImmutable('now -7 days'),
+            new DateTimeImmutable('now')
         )
-        ->withLanguage($_GET['language'] ?? 'en-US')
+        ->withLanguage('en-US')
         ->considerWebSearch()
         # ->considerImageSearch() // Consider only image search
         # ->considerNewsSearch() // Consider only news search
@@ -73,17 +65,16 @@ $relatedSearchUrlBuilder = (new SearchFilter())
         # ->considerGoogleShoppingSearch() // Consider only Google Shopping search
         ->withTopMetrics()
         ->withRisingMetrics();
+```
 
-    // Get related query results
-    $result = (new RelatedQueriesSearch())
-        ->search($relatedSearchUrlBuilder)
-        ->jsonSerialize();
+### 2) Execute the search you wish to
 
-    // Get related topics results
-    $result = (new RelatedTopicsSearch())
-        ->search($relatedSearchUrlBuilder)
-        ->jsonSerialize();
-?>
+#### Related Queries
+
+```php
+$result = (new GSoares\GoogleTrends\Search\RelatedQueriesSearch())
+    ->search($searchFilter)
+    ->jsonSerialize();
 ```
 
 JSON response example:
@@ -108,10 +99,74 @@ JSON response example:
    ]
 }
 ```
+#### Related Topics
+
+```php
+$result = (new GSoares\GoogleTrends\Search\RelatedTopicsSearch())
+    ->search($searchFilter)
+    ->jsonSerialize();
+```
+
+JSON response example:
+
+```json
+{  
+   "searchUrl":"http://www.google.com/trends/...",
+   "totalResults":10,
+   "results":[  
+      {  
+         "term":"Google Search - Topic",
+         "ranking":100,
+         "hasData": true,
+         "searchUrl":"http://trends.google.com/..."
+      },
+      {  
+         "term":"Google - Technology company",
+         "ranking":85,
+         "hasData": true,
+         "searchUrl":"http://trends.google.com/..."
+      }
+   ]
+}
+```
+#### Interest Over Time
+
+```php
+$result = (new GSoares\GoogleTrends\Search\InterestOverTimeSearch())
+            ->search($relatedSearchUrlBuilder)
+            ->jsonSerialize();
+```
+
+JSON response example:
+
+```json
+{  
+   "searchUrl":"http://www.google.com/trends/...",
+   "totalResults":10,
+   "results":[  
+      {
+            "interestAt": "2020-03-21T00:00:00+00:00",
+            "values": [
+              58
+            ],
+            "firstValue": 58,
+            "hasData": true
+      },
+      {
+        "interestAt": "2020-03-22T00:00:00+00:00",
+        "values": [
+          57
+        ],
+        "firstValue": 57,
+        "hasData": true
+      }
+   ]
+}
+```
 
 ## Installation
 
-The Project available on [Packagist](https://packagist.org/packages/gabrielfs7/google-trends) and you can install it using [Composer](http://getcomposer.org/):
+The Project is available on [Packagist](https://packagist.org/packages/gabrielfs7/google-trends) and you can install it using [Composer](http://getcomposer.org/):
 
 ```shell script
 composer install gabrielfs7/google-trends
