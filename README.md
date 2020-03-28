@@ -45,27 +45,22 @@ A easier way to search on Google Trends and get a standard response in JSON or P
 
 ## Usage
 
-Only 3 simple steps!
+Only a few steps!
 
-1) Create a `SearchFilter` with your restrictions.
-2) Chose the type of search you want to do.
-3) Execute the search and get the results!
+### 1) Create a `SearchFilter` with your restrictions
 
 ```php
-<?php
-use GSoares\GoogleTrends\Search\RelatedTopicsSearch;
 use GSoares\GoogleTrends\Search\SearchFilter;
-use GSoares\GoogleTrends\Search\RelatedQueriesSearch;
 
-$relatedSearchUrlBuilder = (new SearchFilter())
-        ->withCategory((int)($_GET['category'] ?? 0)) //All categories
-        ->withSearchTerm($_GET['searchTerm'][0] ?? 'google')
-        ->withLocation($_GET['location'] ?? 'US')
+$searchFilter = (new SearchFilter())
+        ->withCategory(0) //All categories
+        ->withSearchTerm('google')
+        ->withLocation('US')
         ->withinInterval(
-            new DateTimeImmutable($_GET['from'] ?? 'now -7 days'),
-            new DateTimeImmutable($_GET['to'] ?? 'now')
+            new DateTimeImmutable('now -7 days'),
+            new DateTimeImmutable('now')
         )
-        ->withLanguage($_GET['language'] ?? 'en-US')
+        ->withLanguage('en-US')
         ->considerWebSearch()
         # ->considerImageSearch() // Consider only image search
         # ->considerNewsSearch() // Consider only news search
@@ -73,17 +68,23 @@ $relatedSearchUrlBuilder = (new SearchFilter())
         # ->considerGoogleShoppingSearch() // Consider only Google Shopping search
         ->withTopMetrics()
         ->withRisingMetrics();
+```
 
-    // Get related query results
-    $result = (new RelatedQueriesSearch())
-        ->search($relatedSearchUrlBuilder)
-        ->jsonSerialize();
+### 2) Execute the search you wish to
 
-    // Get related topics results
-    $result = (new RelatedTopicsSearch())
-        ->search($relatedSearchUrlBuilder)
-        ->jsonSerialize();
-?>
+```php
+use GSoares\GoogleTrends\Search\RelatedTopicsSearch;
+use GSoares\GoogleTrends\Search\RelatedQueriesSearch;
+
+// Get related query results
+$result = (new RelatedQueriesSearch())
+    ->search($searchFilter)
+    ->jsonSerialize();
+
+// Get related topics results
+$result = (new RelatedTopicsSearch())
+    ->search($searchFilter)
+    ->jsonSerialize();
 ```
 
 JSON response example:
@@ -111,7 +112,7 @@ JSON response example:
 
 ## Installation
 
-The Project available on [Packagist](https://packagist.org/packages/gabrielfs7/google-trends) and you can install it using [Composer](http://getcomposer.org/):
+The Project is available on [Packagist](https://packagist.org/packages/gabrielfs7/google-trends) and you can install it using [Composer](http://getcomposer.org/):
 
 ```shell script
 composer install gabrielfs7/google-trends
