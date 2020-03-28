@@ -45,4 +45,12 @@ class ExploreResultCollectionTest extends TestCase
 
         (new ExploreResultCollection(...[]))->getRelatedTopicsResult();
     }
+
+    public function testWillThrowExceptionIfNoInterestOverTimeResult(): void
+    {
+        $this->expectException(GoogleTrendsException::class);
+        $this->expectExceptionMessage('No explore result available for interest over time!');
+
+        (new ExploreResultCollection(...[]))->getInterestOverTimeResult();
+    }
 }

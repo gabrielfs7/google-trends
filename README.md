@@ -40,7 +40,6 @@ A easier way to search on Google Trends and get a standard response in JSON or P
 
 ### TODO
 
-- Add support for "time series" results.
 - Add support for "interests by region" results.
 
 ## Usage
@@ -50,9 +49,7 @@ Only a few steps!
 ### 1) Create a `SearchFilter` with your restrictions
 
 ```php
-use GSoares\GoogleTrends\Search\SearchFilter;
-
-$searchFilter = (new SearchFilter())
+$searchFilter = (new GSoares\GoogleTrends\Search\SearchFilter())
         ->withCategory(0) //All categories
         ->withSearchTerm('google')
         ->withLocation('US')
@@ -72,17 +69,10 @@ $searchFilter = (new SearchFilter())
 
 ### 2) Execute the search you wish to
 
+#### Related Queries
+
 ```php
-use GSoares\GoogleTrends\Search\RelatedTopicsSearch;
-use GSoares\GoogleTrends\Search\RelatedQueriesSearch;
-
-// Get related query results
-$result = (new RelatedQueriesSearch())
-    ->search($searchFilter)
-    ->jsonSerialize();
-
-// Get related topics results
-$result = (new RelatedTopicsSearch())
+$result = (new GSoares\GoogleTrends\Search\RelatedQueriesSearch())
     ->search($searchFilter)
     ->jsonSerialize();
 ```
@@ -105,6 +95,70 @@ JSON response example:
          "ranking":85,
          "hasData": true,
          "searchUrl":"http://trends.google.com/..."
+      }
+   ]
+}
+```
+#### Related Topics
+
+```php
+$result = (new GSoares\GoogleTrends\Search\RelatedTopicsSearch())
+    ->search($searchFilter)
+    ->jsonSerialize();
+```
+
+JSON response example:
+
+```json
+{  
+   "searchUrl":"http://www.google.com/trends/...",
+   "totalResults":10,
+   "results":[  
+      {  
+         "term":"Google Search - Topic",
+         "ranking":100,
+         "hasData": true,
+         "searchUrl":"http://trends.google.com/..."
+      },
+      {  
+         "term":"Google - Technology company",
+         "ranking":85,
+         "hasData": true,
+         "searchUrl":"http://trends.google.com/..."
+      }
+   ]
+}
+```
+#### Interest Over Time
+
+```php
+$result = (new GSoares\GoogleTrends\Search\InterestOverTimeSearch())
+            ->search($relatedSearchUrlBuilder)
+            ->jsonSerialize();
+```
+
+JSON response example:
+
+```json
+{  
+   "searchUrl":"http://www.google.com/trends/...",
+   "totalResults":10,
+   "results":[  
+      {
+            "interestAt": "2020-03-21T00:00:00+00:00",
+            "values": [
+              58
+            ],
+            "firstValue": 58,
+            "hasData": true
+      },
+      {
+        "interestAt": "2020-03-22T00:00:00+00:00",
+        "values": [
+          57
+        ],
+        "firstValue": 57,
+        "hasData": true
       }
    ]
 }

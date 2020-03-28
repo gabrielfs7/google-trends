@@ -42,4 +42,9 @@ class ExploreResult
     {
         return self::ID_RELATED_TOPICS === $this->id;
     }
+
+    public function isInterestOverTimeSearch(): bool
+    {
+        return self::ID_INTEREST_OVER_TIME === $this->id;
+    }
 }
