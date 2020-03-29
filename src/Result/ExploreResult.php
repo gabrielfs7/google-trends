@@ -47,4 +47,9 @@ class ExploreResult
     {
         return self::ID_INTEREST_OVER_TIME === $this->id;
     }
+
+    public function isInterestByRegionSearch(): bool
+    {
+        return self::ID_INTEREST_BY_REGION === $this->id;
+    }
 }

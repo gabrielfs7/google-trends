@@ -17,3 +17,19 @@ pull request for each branch.
 ## Style Guide
 
 Make sure your code adheres to the [PSR-12 standard](https://www.php-fig.org/psr/psr-12/).
+
+### Auto fixing code
+
+```shell script
+composer phpcbf
+```
+and 
+```shell script
+composer php-cs-fixer
+```
+
+### Running Tests and checking coverage
+
+```shell script
+composer test-report
+```

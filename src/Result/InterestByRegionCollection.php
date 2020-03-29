@@ -3,13 +3,13 @@
 namespace GSoares\GoogleTrends\Result;
 
 /**
- * @method RelatedResult[] getResults()
+ * @method InterestByRegionResult[] getResults()
  *
  * @author Gabriel Felipe Soares <gabrielfs7@gmail.com>
  */
-class RelatedResultCollection extends AbstractResultCollection
+class InterestByRegionCollection extends AbstractResultCollection
 {
-    public function __construct(string $searchUrl, RelatedResult ...$results)
+    public function __construct(string $searchUrl, InterestByRegionResult ...$results)
     {
         parent::__construct($searchUrl, $results);
     }
