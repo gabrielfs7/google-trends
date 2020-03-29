@@ -80,6 +80,9 @@ class ExploreResultCollection
     }
 
     /**
+     * @param string $method
+     * @param string $exceptionMessage
+     *
      * @return ExploreResult
      *
      * @throws GoogleTrendsException
