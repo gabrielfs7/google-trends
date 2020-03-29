@@ -53,4 +53,12 @@ class ExploreResultCollectionTest extends TestCase
 
         (new ExploreResultCollection(...[]))->getInterestOverTimeResult();
     }
+
+    public function testWillThrowExceptionIfNoInterestByRegionResult(): void
+    {
+        $this->expectException(GoogleTrendsException::class);
+        $this->expectExceptionMessage('No explore result available for interest by region!');
+
+        (new ExploreResultCollection(...[]))->getInterestByRegionResult();
+    }
 }

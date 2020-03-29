@@ -27,6 +27,8 @@ A easier way to search on Google Trends and get a standard response in JSON or P
 
 - Related topics Search.
 - Related queries Search.
+- Interest over time Search.
+- Interest by region Search.
 - Search by categories.
 - Search by location.
 - Language support.
@@ -37,10 +39,6 @@ A easier way to search on Google Trends and get a standard response in JSON or P
   - News
   - Youtube
   - Google Shopping
-
-### TODO
-
-- Add support for "interests by region" results.
 
 ## Usage
 
@@ -112,7 +110,7 @@ JSON response example:
 ```json
 {  
    "searchUrl":"http://www.google.com/trends/...",
-   "totalResults":10,
+   "totalResults":2,
    "results":[  
       {  
          "term":"Google Search - Topic",
@@ -142,7 +140,7 @@ JSON response example:
 ```json
 {  
    "searchUrl":"http://www.google.com/trends/...",
-   "totalResults":10,
+   "totalResults":2,
    "results":[  
       {
             "interestAt": "2020-03-21T00:00:00+00:00",
@@ -158,6 +156,38 @@ JSON response example:
           57
         ],
         "firstValue": 57,
+        "hasData": true
+      }
+   ]
+}
+```
+#### Interest By Region
+
+```php
+$result = (new GSoares\GoogleTrends\Search\InterestByRegionSearch())
+            ->search($relatedSearchUrlBuilder)
+            ->jsonSerialize();
+```
+
+JSON response example:
+
+```json
+{  
+   "searchUrl":"http://www.google.com/trends/...",
+   "totalResults":2,
+   "results":[  
+      {
+        "geoCode": "US-RI",
+        "geoName": "Rhode Island",
+        "value": 100,
+        "maxValueIndex": 0,
+        "hasData": true
+      },
+      {
+        "geoCode": "US-NY",
+        "geoName": "New York",
+        "value": 80,
+        "maxValueIndex": 0,
         "hasData": true
       }
    ]

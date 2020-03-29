@@ -1,6 +1,7 @@
 <?php
 require __DIR__ . '/../vendor/autoload.php';
 
+use GSoares\GoogleTrends\Search\InterestByRegionSearch;
 use GSoares\GoogleTrends\Search\InterestOverTimeSearch;
 use GSoares\GoogleTrends\Search\RelatedTopicsSearch;
 use GSoares\GoogleTrends\Search\SearchFilter;
@@ -44,6 +45,12 @@ try {
 
     if ($searchType === 'interestOverTime') {
         $result = (new InterestOverTimeSearch())
+            ->search($relatedSearchUrlBuilder)
+            ->jsonSerialize();
+    }
+
+    if ($searchType === 'interestByRegion') {
+        $result = (new InterestByRegionSearch())
             ->search($relatedSearchUrlBuilder)
             ->jsonSerialize();
     }

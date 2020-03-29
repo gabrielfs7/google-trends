@@ -74,4 +74,20 @@ class ExploreResultCollection
 
         throw new GoogleTrendsException('No explore result available for interest over time!');
     }
+
+    /**
+     * @return ExploreResult
+     *
+     * @throws GoogleTrendsException
+     */
+    public function getInterestByRegionResult(): ExploreResult
+    {
+        foreach ($this->results as $result) {
+            if ($result->isInterestByRegionSearch()) {
+                return $result;
+            }
+        }
+
+        throw new GoogleTrendsException('No explore result available for interest by region!');
+    }
 }
