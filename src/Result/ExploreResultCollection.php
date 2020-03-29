@@ -34,13 +34,10 @@ class ExploreResultCollection
      */
     public function getRelatedQueriesResult(): ExploreResult
     {
-        foreach ($this->results as $result) {
-            if ($result->isRelatedQueriesSearch()) {
-                return $result;
-            }
-        }
-
-        throw new GoogleTrendsException('No explore result available for related queries!');
+        return $this->getResultByMethod(
+            'isRelatedQueriesSearch',
+            'No explore result available for related queries!'
+        );
     }
 
     /**
@@ -50,13 +47,10 @@ class ExploreResultCollection
      */
     public function getRelatedTopicsResult(): ExploreResult
     {
-        foreach ($this->results as $result) {
-            if ($result->isRelatedTopicsSearch()) {
-                return $result;
-            }
-        }
-
-        throw new GoogleTrendsException('No explore result available for related topics!');
+        return $this->getResultByMethod(
+            'isRelatedTopicsSearch',
+            'No explore result available for related topics!'
+        );
     }
 
     /**
@@ -66,13 +60,10 @@ class ExploreResultCollection
      */
     public function getInterestOverTimeResult(): ExploreResult
     {
-        foreach ($this->results as $result) {
-            if ($result->isInterestOverTimeSearch()) {
-                return $result;
-            }
-        }
-
-        throw new GoogleTrendsException('No explore result available for interest over time!');
+        return $this->getResultByMethod(
+            'isInterestOverTimeSearch',
+            'No explore result available for interest over time!'
+        );
     }
 
     /**
@@ -82,12 +73,25 @@ class ExploreResultCollection
      */
     public function getInterestByRegionResult(): ExploreResult
     {
+        return $this->getResultByMethod(
+            'isInterestByRegionSearch',
+            'No explore result available for interest by region!'
+        );
+    }
+
+    /**
+     * @return ExploreResult
+     *
+     * @throws GoogleTrendsException
+     */
+    private function getResultByMethod(string $method, string $exceptionMessage): ExploreResult
+    {
         foreach ($this->results as $result) {
-            if ($result->isInterestByRegionSearch()) {
+            if ($result->$method()) {
                 return $result;
             }
         }
 
-        throw new GoogleTrendsException('No explore result available for interest by region!');
+        throw new GoogleTrendsException($exceptionMessage);
     }
 }
