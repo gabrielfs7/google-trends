@@ -199,7 +199,7 @@ JSON response example:
 The Project is available on [Packagist](https://packagist.org/packages/gabrielfs7/google-trends) and you can install it using [Composer](http://getcomposer.org/):
 
 ```shell script
-composer install gabrielfs7/google-trends
+composer require gabrielfs7/google-trends
 ```
 
 ## Example
