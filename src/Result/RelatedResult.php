@@ -22,19 +22,25 @@ class RelatedResult implements JsonSerializable
     /**
      * @var int
      */
-    private $ranking;
+    private $value;
 
     /**
      * @var string
      */
     private $searchUrl;
 
-    public function __construct(string $term, bool $hasData, int $ranking, string $searchUrl)
+    /**
+     * @var string
+     */
+    private $metricType;
+
+    public function __construct(string $term, bool $hasData, int $value, string $searchUrl, string $metricType = null)
     {
         $this->term = $term;
         $this->hasData = $hasData;
-        $this->ranking = $ranking;
+        $this->value = $value;
         $this->searchUrl = $searchUrl;
+        $this->metricType = $metricType ?? 'TOP';
     }
 
     public function getTerm(): string
@@ -47,9 +53,19 @@ class RelatedResult implements JsonSerializable
         return $this->hasData;
     }
 
+    /**
+     * @return int
+     *
+     * @deprecated Use $this::getValue()
+     */
     public function getRanking(): int
     {
-        return $this->ranking;
+        return $this->getValue();
+    }
+
+    public function getValue(): int
+    {
+        return $this->value;
     }
 
     public function getSearchUrl(): string
@@ -57,13 +73,20 @@ class RelatedResult implements JsonSerializable
         return $this->searchUrl;
     }
 
+    public function getMetricType(): string
+    {
+        return $this->metricType;
+    }
+
     public function jsonSerialize(): array
     {
         return [
             'term' => $this->getTerm(),
             'hasData' => $this->hasData(),
-            'ranking' => $this->getRanking(),
+            'ranking' => $this->getValue(),
+            'value' => $this->getValue(),
             'searchUrl' => $this->getSearchUrl(),
+            'metricType' => $this->getMetricType(),
         ];
     }
 }

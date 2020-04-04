@@ -203,7 +203,7 @@ class SearchFilter
 
     public function getToken(): string
     {
-        return $this->token;
+        return (string)$this->token;
     }
 
     public function getLocation(): string
@@ -244,5 +244,15 @@ class SearchFilter
     public function getMetrics(): array
     {
         return $this->metrics;
+    }
+
+    public function isConsideringTopMetrics(): bool
+    {
+        return in_array('TOP', $this->metrics);
+    }
+
+    public function isConsideringRisingMetrics(): bool
+    {
+        return in_array('RISING', $this->metrics);
     }
 }

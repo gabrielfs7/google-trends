@@ -40,6 +40,10 @@ abstract class AbstractRelatedSearch
      */
     public function search(SearchFilter $searchFilter): RelatedResultCollection
     {
+        if (!$searchFilter->isConsideringRisingMetrics() && !$searchFilter->isConsideringTopMetrics()) {
+            return new RelatedResultCollection($this->buildQuery($searchFilter), ...[]);
+        }
+
         $searchFilter->withToken($this->getToken($this->exploreSearch->search($searchFilter)));
 
         $searchUrl = $this->buildQuery($searchFilter);
@@ -59,6 +63,14 @@ abstract class AbstractRelatedSearch
 
         foreach ($responseDecoded['default']['rankedList'] as $row) {
             foreach ($row['rankedKeyword'] ?? [] as $rank) {
+                if (!$searchFilter->isConsideringRisingMetrics() && $this->isRisingMetric($rank)) {
+                    continue;
+                }
+
+                if (!$searchFilter->isConsideringTopMetrics() && !$this->isRisingMetric($rank)) {
+                    continue;
+                }
+
                 $results[] = $this->createResult($rank);
             }
         }
@@ -84,6 +96,13 @@ abstract class AbstractRelatedSearch
      */
     abstract protected function getToken(ExploreResultCollection $resultCollection): string;
 
+    abstract protected function getKeywordType(): string;
+
+    protected function isRisingMetric(array $row): bool
+    {
+        return strpos(($row['formattedValue'] ?? ''), '+') === 0;
+    }
+
     private function buildQuery(SearchFilter $searchFilter): string
     {
         $request = [
@@ -103,7 +122,10 @@ abstract class AbstractRelatedSearch
                 ],
             ],
             'keywordType' => $this->getKeywordType(),
-            'metric' => $searchFilter->getMetrics(),
+            'metric' => [
+                'TOP',
+                'RISING',
+            ],
             'trendinessSettings' => [
                 'compareTime' => $searchFilter->getCompareTime(),
             ],
@@ -138,6 +160,4 @@ abstract class AbstractRelatedSearch
 
         return self::RELATED_SEARCH_URL . '?' . $queryString;
     }
-
-    abstract protected function getKeywordType(): string;
 }

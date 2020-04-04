@@ -34,7 +34,8 @@ class RelatedQueriesSearch extends AbstractRelatedSearch
             (string)$data['query'],
             (bool)($data['hasData'] ?? false),
             (int)$data['value'],
-            self::TRENDS_URL . (string)$data['link']
+            self::TRENDS_URL . (string)$data['link'],
+            $this->isRisingMetric($data) ? 'RISING' : 'TOP'
         );
     }
 

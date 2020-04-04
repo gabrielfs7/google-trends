@@ -80,19 +80,21 @@ JSON response example:
 ```json
 {  
    "searchUrl":"http://www.google.com/trends/...",
-   "totalResults":10,
+   "totalResults":2,
    "results":[  
       {  
          "term":"hair salon",
-         "ranking":100,
+         "value":100,
          "hasData": true,
-         "searchUrl":"http://trends.google.com/..."
+         "searchUrl":"http://trends.google.com/...",
+         "metricType":"TOP"
       },
       {  
          "term":"short hair",
-         "ranking":85,
+         "value":85,
          "hasData": true,
-         "searchUrl":"http://trends.google.com/..."
+         "searchUrl":"http://trends.google.com/...",
+         "metricType":"RISING"
       }
    ]
 }
@@ -114,15 +116,17 @@ JSON response example:
    "results":[  
       {  
          "term":"Google Search - Topic",
-         "ranking":100,
+         "value":100,
          "hasData": true,
-         "searchUrl":"http://trends.google.com/..."
+         "searchUrl":"http://trends.google.com/...",
+         "metricType":"TOP"
       },
       {  
          "term":"Google - Technology company",
-         "ranking":85,
+         "value":85,
          "hasData": true,
-         "searchUrl":"http://trends.google.com/..."
+         "searchUrl":"http://trends.google.com/...",
+         "metricType":"RISING"
       }
    ]
 }
