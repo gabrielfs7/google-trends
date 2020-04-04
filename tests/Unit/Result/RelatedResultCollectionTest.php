@@ -28,13 +28,23 @@ class RelatedResultCollectionTest extends TestCase
     {
         $result = [
             'searchUrl' => 'url',
-            'totalResults' => 1,
+            'totalResults' => 2,
             'results' => [
                 [
                     'term' => 'term',
                     'hasData' => true,
                     'ranking' => 100,
+                    'value' => 100,
                     'searchUrl' => 'link',
+                    'metricType' => 'TOP',
+                ],
+                [
+                    'term' => 'term2',
+                    'hasData' => false,
+                    'ranking' => 99,
+                    'value' => 99,
+                    'searchUrl' => 'link2',
+                    'metricType' => 'RISING',
                 ]
             ],
         ];
@@ -45,7 +55,10 @@ class RelatedResultCollectionTest extends TestCase
                 json_encode(
                     (new RelatedResultCollection(
                         'url',
-                        new RelatedResult('term', true, 100, 'link')
+                        ...[
+                            new RelatedResult('term', true, 100, 'link', 'TOP'),
+                            new RelatedResult('term2', false, 99, 'link2', 'RISING'),
+                        ]
                     ))->jsonSerialize()
                 ),
                 true
