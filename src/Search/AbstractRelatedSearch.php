@@ -41,7 +41,7 @@ abstract class AbstractRelatedSearch
     public function search(SearchFilter $searchFilter): RelatedResultCollection
     {
         if (!$searchFilter->isConsideringRisingMetrics() && !$searchFilter->isConsideringTopMetrics()) {
-            return new RelatedResultCollection($this->buildQuery($searchFilter), ...[]);
+            return new RelatedResultCollection('', ...[]);
         }
 
         $searchFilter->withToken($this->getToken($this->exploreSearch->search($searchFilter)));

@@ -56,7 +56,8 @@ class RelatedResult implements JsonSerializable
     /**
      * @return int
      *
-     * @deprecated Use $this::getValue()
+     * @deprecated         Use $this::getValue()
+     * @codeCoverageIgnore
      */
     public function getRanking(): int
     {

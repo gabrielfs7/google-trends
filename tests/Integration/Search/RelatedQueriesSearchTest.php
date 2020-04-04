@@ -44,30 +44,24 @@ class RelatedQueriesSearchTest extends TestCase
         $this->searchRequest = $this->createMock(SearchRequest::class);
         $this->exploreSearch = $this->createMock(ExploreSearch::class);
         $this->sut = new RelatedQueriesSearch($this->exploreSearch, $this->searchRequest);
-
-        $this->searchFilter
-            ->withTopMetrics()
-            ->withRisingMetrics();
-
-        $this->exploreSearch
-            ->expects($this->once())
-            ->method('search')
-            ->with($this->searchFilter)
-            ->willReturn(
-                new ExploreResultCollection(
-                    new ExploreResult('RELATED_QUERIES', 'TOKEN')
-                )
-            );
     }
 
-    public function testSearchWillReturnResult(): void
-    {
-        $relatedQueriesResult = new RelatedResult(
-            'term',
-            true,
-            100,
-            'https://trends.google.com/link'
-        );
+    /**
+     * @param SearchFilter    $searchFilter
+     * @param array           $rawResult
+     * @param RelatedResult[] $results
+     *
+     * @throws GoogleTrendsException
+     *
+     * @dataProvider searchWillReturnResultProvider
+     */
+    public function testSearchWillReturnResult(
+        SearchFilter $searchFilter,
+        array $rawResult,
+        array $results
+    ): void {
+        $this->expectSearchFilter();
+        $this->expectExploreResult($searchFilter);
 
         $this->searchRequest
             ->expects($this->once())
@@ -78,14 +72,7 @@ class RelatedQueriesSearchTest extends TestCase
                     'default' => [
                         'rankedList' => [
                             [
-                                'rankedKeyword' => [
-                                    [
-                                        'query' => 'term',
-                                        'value' => 100,
-                                        'link' => '/link',
-                                        'hasData' => true,
-                                    ]
-                                ]
+                                'rankedKeyword' => $rawResult
                             ]
                         ]
                     ]
@@ -93,13 +80,126 @@ class RelatedQueriesSearchTest extends TestCase
             );
 
         $this->assertEquals(
-            new RelatedResultCollection(self::SEARCH_URL, $relatedQueriesResult),
-            $this->sut->search($this->searchFilter)
+            new RelatedResultCollection(self::SEARCH_URL, ...$results),
+            $this->sut->search($searchFilter)
         );
+    }
+
+    public function searchWillReturnResultProvider(): array
+    {
+        return [
+            'Searching TOP and RISING' => [
+                'filter' => (new SearchFilter(new DateTimeImmutable('2010-10-10 00:00:00')))
+                    ->withTopMetrics()
+                    ->withRisingMetrics(),
+                'rawResult' => [
+                    [
+                        'query' => 'term',
+                        'value' => 100,
+                        'link' => '/link',
+                        'hasData' => true,
+                        'formattedValue' => '100'
+                    ],
+                    [
+                        'query' => 'term2',
+                        'value' => 99,
+                        'link' => '/link2',
+                        'hasData' => true,
+                        'formattedValue' => '+99%'
+                    ]
+                ],
+                'results' => [
+                    new RelatedResult(
+                        'term',
+                        true,
+                        100,
+                        'https://trends.google.com/link',
+                        'TOP'
+                    ),
+                    new RelatedResult(
+                        'term2',
+                        true,
+                        99,
+                        'https://trends.google.com/link2',
+                        'RISING'
+                    )
+                ]
+            ],
+            'Searching TOP only' => [
+                'filter' => (new SearchFilter(new DateTimeImmutable('2010-10-10 00:00:00')))
+                    ->withTopMetrics(),
+                'rawResult' => [
+                    [
+                        'query' => 'term',
+                        'value' => 100,
+                        'link' => '/link',
+                        'hasData' => true,
+                        'formattedValue' => '100'
+                    ],
+                    [
+                        'query' => 'term2',
+                        'value' => 99,
+                        'link' => '/link2',
+                        'hasData' => true,
+                        'formattedValue' => '+99%'
+                    ]
+                ],
+                'results' => [
+                    new RelatedResult(
+                        'term',
+                        true,
+                        100,
+                        'https://trends.google.com/link',
+                        'TOP'
+                    )
+                ]
+            ],
+            'Searching RISING only' => [
+                'filter' => (new SearchFilter(new DateTimeImmutable('2010-10-10 00:00:00')))
+                    ->withRisingMetrics(),
+                'rawResult' => [
+                    [
+                        'query' => 'term',
+                        'value' => 100,
+                        'link' => '/link',
+                        'hasData' => true,
+                        'formattedValue' => '100'
+                    ],
+                    [
+                        'query' => 'term2',
+                        'value' => 99,
+                        'link' => '/link2',
+                        'hasData' => true,
+                        'formattedValue' => '+99%'
+                    ]
+                ],
+                'results' => [
+                    new RelatedResult(
+                        'term2',
+                        true,
+                        99,
+                        'https://trends.google.com/link2',
+                        'RISING'
+                    )
+                ]
+            ],
+        ];
+    }
+
+    public function testSearchWillNoMetricWillNotReturnResult(): void
+    {
+        $this->searchRequest
+            ->expects($this->never())
+            ->method('search');
+
+        $this->assertEmpty($this->sut->search($this->searchFilter)->getResults());
     }
 
     public function testSearchWillThrowExceptionWhenMissingRequiredKeys(): void
     {
+        $this->expectSearchFilter();
+        $this->expectExploreResult($this->searchFilter);
+
         $this->searchRequest
             ->expects($this->once())
             ->method('search')
@@ -128,6 +228,9 @@ class RelatedQueriesSearchTest extends TestCase
 
     public function testSearchWillThrowExceptionWhenInvalidResult(): void
     {
+        $this->expectSearchFilter();
+        $this->expectExploreResult($this->searchFilter);
+
         $this->searchRequest
             ->expects($this->once())
             ->method('search')
@@ -142,5 +245,25 @@ class RelatedQueriesSearchTest extends TestCase
         $this->expectExceptionMessage('GoogleTrends error: Invalid google response body ""');
 
         $this->sut->search($this->searchFilter);
+    }
+
+    private function expectSearchFilter(): void
+    {
+        $this->searchFilter
+            ->withTopMetrics()
+            ->withRisingMetrics();
+    }
+
+    private function expectExploreResult(SearchFilter $searchFilter): void
+    {
+        $this->exploreSearch
+            ->expects($this->any())
+            ->method('search')
+            ->with($searchFilter)
+            ->willReturn(
+                new ExploreResultCollection(
+                    new ExploreResult('RELATED_QUERIES', 'TOKEN')
+                )
+            );
     }
 }
