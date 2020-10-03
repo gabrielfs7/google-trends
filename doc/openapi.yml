@@ -1,0 +1,268 @@
+openapi: 3.0.3
+info:
+  title: Google Trends API
+  description: 'Google Trends API to search results'
+  version: v1
+
+paths:
+  /search-interest-by-region:
+    get:
+      summary: Retrieve interests by region result
+      parameters:
+        - $ref: "#/components/parameters/categoryId"
+        - $ref: "#/components/parameters/searchTerm"
+        - $ref: "#/components/parameters/location"
+        - $ref: "#/components/parameters/intervalFrom"
+        - $ref: "#/components/parameters/intervalTo"
+        - $ref: "#/components/parameters/language"
+        - $ref: "#/components/parameters/searchSource"
+        - $ref: "#/components/parameters/withTopMetrics"
+        - $ref: "#/components/parameters/withRisingMetrics"
+      responses:
+        200:
+          $ref: '#/components/responses/SearchResultForForInterestByRegionResponse'
+        400:
+          $ref: '#/components/responses/BadRequestResponse'
+        500:
+          $ref: '#/components/responses/BadRequestResponse'
+  /search-interest-over-time:
+    get:
+      summary: Retrieve interests over time result
+      parameters:
+        - $ref: "#/components/parameters/categoryId"
+        - $ref: "#/components/parameters/searchTerm"
+        - $ref: "#/components/parameters/location"
+        - $ref: "#/components/parameters/intervalFrom"
+        - $ref: "#/components/parameters/intervalTo"
+        - $ref: "#/components/parameters/language"
+        - $ref: "#/components/parameters/searchSource"
+        - $ref: "#/components/parameters/withTopMetrics"
+        - $ref: "#/components/parameters/withRisingMetrics"
+      responses:
+        200:
+          $ref: '#/components/responses/SearchResultForForInterestOverTimeResponse'
+        400:
+          $ref: '#/components/responses/BadRequestResponse'
+        500:
+          $ref: '#/components/responses/BadRequestResponse'
+  /search-related-topics:
+    get:
+      summary: Retrieve related topics result
+      parameters:
+        - $ref: "#/components/parameters/categoryId"
+        - $ref: "#/components/parameters/searchTerm"
+        - $ref: "#/components/parameters/location"
+        - $ref: "#/components/parameters/intervalFrom"
+        - $ref: "#/components/parameters/intervalTo"
+        - $ref: "#/components/parameters/language"
+        - $ref: "#/components/parameters/searchSource"
+        - $ref: "#/components/parameters/withTopMetrics"
+        - $ref: "#/components/parameters/withRisingMetrics"
+      responses:
+        200:
+          $ref: '#/components/responses/SearchResultForRelatedQueriesResponse'
+        400:
+          $ref: '#/components/responses/BadRequestResponse'
+        500:
+          $ref: '#/components/responses/BadRequestResponse'
+  /search-related-queries:
+    get:
+      summary: Retrieve related queries result
+      parameters:
+        - $ref: "#/components/parameters/categoryId"
+        - $ref: "#/components/parameters/searchTerm"
+        - $ref: "#/components/parameters/location"
+        - $ref: "#/components/parameters/intervalFrom"
+        - $ref: "#/components/parameters/intervalTo"
+        - $ref: "#/components/parameters/language"
+        - $ref: "#/components/parameters/searchSource"
+        - $ref: "#/components/parameters/withTopMetrics"
+        - $ref: "#/components/parameters/withRisingMetrics"
+      responses:
+        200:
+          $ref: '#/components/responses/SearchResultForRelatedQueriesResponse'
+        400:
+          $ref: '#/components/responses/BadRequestResponse'
+        500:
+          $ref: '#/components/responses/BadRequestResponse'
+components:
+  parameters:
+    categoryId:
+      in: query
+      name: categoryId
+      required: false
+      schema:
+        type: integer
+      description: The Google trends category id.
+    searchTerm:
+      in: query
+      name: searchTerm
+      required: false
+      schema:
+        type: string
+      description: The Google trends search term.
+    location:
+      in: query
+      name: location
+      required: false
+      schema:
+        type: string
+      description: The Google trends location to be considered in the search.
+    intervalFrom:
+      in: query
+      name: intervalFrom
+      required: false
+      schema:
+        type: string
+      description: Will search results from this date.
+      example:
+        "2020-12-12 00:00:00"
+    intervalTo:
+      in: query
+      name: intervalTo
+      required: false
+      schema:
+        type: string
+      description: Will search results to this date.
+      example: "2020-12-12 00:00:00"
+    language:
+      in: query
+      name: language
+      required: false
+      schema:
+        type: string
+      description: Bring results with this language.
+      example: "en-US"
+    searchSource:
+      in: query
+      name: searchSource
+      required: false
+      schema:
+        type: string
+        enum:
+          - "web"
+          - "image"
+          - "news"
+          - "youtube"
+          - "googleShopping"
+      description: Will do the search considering one of these data sources. Default = web
+    withTopMetrics:
+      in: query
+      name: withTopMetrics
+      required: false
+      schema:
+        type: boolean
+      description: Consider the top metrics in the search
+    withRisingMetrics:
+      in: query
+      name: withTopMetrics
+      required: false
+      schema:
+        type: boolean
+      description: Consider rising metrics in the search
+  schemas:
+    SearchResult:
+      type: object
+      properties:
+        searchUrl:
+          type: string
+          example: "http://www.google.com/trends/..."
+        totalResults:
+          type: integer
+          example: 20
+    SearchResultItem:
+      type: object
+      properties:
+        term:
+          type: string
+          example: "Sports"
+        value:
+          type: integer
+          example: 20
+        hasData:
+          type: boolean
+        searchUrl:
+          type: string
+          example: "http://www.google.com/trends/..."
+        metricType:
+          type: string
+          enum:
+            - "TOP"
+            - "RISING"
+    SearchResultItemForInterestOverTime:
+      allOf:
+        - $ref: '#/components/schemas/SearchResult'
+      properties:
+        interestAt:
+          type: string
+          example: "2020-03-21T00:00:00+00:00"
+        values:
+          type: array
+          items:
+            type: integer
+        hasData:
+          type: boolean
+        firstValue:
+          type: integer
+          example: 2
+    SearchResultItemForInterestByRegion:
+      allOf:
+        - $ref: '#/components/schemas/SearchResult'
+      properties:
+        geoCode:
+          type: string
+          example: "US-RI"
+        geoName:
+          type: string
+          example: "Rhode Island"
+        value:
+          type: integer
+          example: 2
+        maxValueIndex:
+          type: integer
+          example: 0
+        hasData:
+          type: boolean
+    SearchResultForRelatedQueries:
+      allOf:
+        - $ref: '#/components/schemas/SearchResult'
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchResultItem'
+    ErrorResponse:
+      properties:
+        success:
+          type: boolean
+          example: false
+        code:
+          type: integer
+          example: 400
+        message:
+          type: string
+  responses:
+    SearchResultForRelatedQueriesResponse:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SearchResultForRelatedQueries'
+    SearchResultForForInterestByRegionResponse:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SearchResultItemForInterestByRegion'
+    SearchResultForForInterestOverTimeResponse:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SearchResultItemForInterestOverTime'
+    BadRequestResponse:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
