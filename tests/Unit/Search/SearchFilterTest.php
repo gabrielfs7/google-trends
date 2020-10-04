@@ -80,7 +80,7 @@ class SearchFilterTest extends TestCase
     public function testConsiderGoogleShoppingSearch(): void
     {
         $this->assertSame(
-            'frgoogle',
+            SearchFilter::SEARCH_SOURCE_GOOGLE_SHOPPING,
             $this->sut->considerGoogleShoppingSearch()->getSearchType()
         );
     }
@@ -88,7 +88,7 @@ class SearchFilterTest extends TestCase
     public function testConsiderImageSearch(): void
     {
         $this->assertSame(
-            'images',
+            SearchFilter::SEARCH_SOURCE_IMAGES,
             $this->sut->considerImageSearch()->getSearchType()
         );
     }
@@ -96,7 +96,7 @@ class SearchFilterTest extends TestCase
     public function testConsiderWebSearch(): void
     {
         $this->assertSame(
-            '',
+            SearchFilter::SEARCH_SOURCE_WEB,
             $this->sut->considerWebSearch()->getSearchType()
         );
     }
@@ -104,7 +104,7 @@ class SearchFilterTest extends TestCase
     public function testConsiderNewsSearch(): void
     {
         $this->assertSame(
-            'news',
+            SearchFilter::SEARCH_SOURCE_NEWS,
             $this->sut->considerNewsSearch()->getSearchType()
         );
     }
@@ -112,7 +112,7 @@ class SearchFilterTest extends TestCase
     public function testConsiderYoutubeSearch(): void
     {
         $this->assertSame(
-            'youtube',
+            SearchFilter::SEARCH_SOURCE_YOUTUBE,
             $this->sut->considerYoutubeSearch()->getSearchType()
         );
     }

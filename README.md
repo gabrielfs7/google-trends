@@ -25,6 +25,7 @@ A easier way to search on Google Trends and get a standard response in JSON or P
 
 ## Current support
 
+- PSR7 Support
 - Related topics Search.
 - Related queries Search.
 - Interest over time Search.
@@ -40,9 +41,17 @@ A easier way to search on Google Trends and get a standard response in JSON or P
   - Youtube
   - Google Shopping
 
+
+
 ## Usage
 
-Only a few steps!
+### Using Open API and PSR7
+
+Current available not PSR7 support. Check [\GSoares\GoogleTrends\Search\Psr7\Search](./src/Search/Psr7/Search.php).
+
+You can check all Open API specs [here](./doc/openapi.yml). And can quickly view it using swagger editor.
+
+Or follow the steps bellow if you prefer your own implementation:
 
 ### 1) Create a `SearchFilter` with your restrictions
 

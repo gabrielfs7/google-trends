@@ -6,11 +6,12 @@ use DateTimeImmutable;
 use GSoares\GoogleTrends\Error\GoogleTrendsException;
 use GSoares\GoogleTrends\Result\InterestOverTimeCollection;
 use GSoares\GoogleTrends\Result\InterestOverTimeResult;
+use GSoares\GoogleTrends\Result\ResultCollectionInterface;
 
 /**
  * @author Gabriel Felipe Soares <gabrielfs7@gmail.com>
  */
-class InterestOverTimeSearch
+class InterestOverTimeSearch implements SearchInterface
 {
     private const SEARCH_URL = 'https://trends.google.com/trends/api/widgetdata/multiline';
 
@@ -37,7 +38,7 @@ class InterestOverTimeSearch
      *
      * @throws GoogleTrendsException
      */
-    public function search(SearchFilter $searchFilter): InterestOverTimeCollection
+    public function search(SearchFilter $searchFilter): ResultCollectionInterface
     {
         $token = $this->exploreSearch
             ->search($searchFilter)

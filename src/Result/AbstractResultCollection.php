@@ -2,12 +2,10 @@
 
 namespace GSoares\GoogleTrends\Result;
 
-use JsonSerializable;
-
 /**
  * @author Gabriel Felipe Soares <gabrielfs7@gmail.com>
  */
-abstract class AbstractResultCollection implements JsonSerializable
+abstract class AbstractResultCollection implements ResultCollectionInterface
 {
     /**
      * @var string

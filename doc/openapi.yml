@@ -3,7 +3,9 @@ info:
   title: Google Trends API
   description: 'Google Trends API to search results'
   version: v1
-
+servers:
+  - url: http://localhost:8000
+    description: Local php server. Start with "php -S localhost:8000"
 paths:
   /search-interest-by-region:
     get:
@@ -140,12 +142,12 @@ components:
       schema:
         type: string
         enum:
-          - "web"
-          - "image"
+          - "" # Web search
+          - "images"
           - "news"
           - "youtube"
-          - "googleShopping"
-      description: Will do the search considering one of these data sources. Default = web
+          - "frgoogle" # Google Shopping
+      description: Will do the search considering one of these data sources. Default = "" (considers web search)
     withTopMetrics:
       in: query
       name: withTopMetrics
@@ -233,14 +235,18 @@ components:
             $ref: '#/components/schemas/SearchResultItem'
     ErrorResponse:
       properties:
-        success:
-          type: boolean
-          example: false
-        code:
-          type: integer
-          example: 400
-        message:
-          type: string
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              status:
+                type: integer
+                example: 400
+              title:
+                type: string
+              details:
+                type: string
   responses:
     SearchResultForRelatedQueriesResponse:
       description: Bad request
