@@ -50,9 +50,6 @@ class Search
                 $searchFilter->withRisingMetrics();
             }
 
-            //var_export($searchFilter); exit(); //FIXME
-            //var_export(json_encode($this->search->search($searchFilter)->jsonSerialize())); exit(); //FIXME
-
             return new Response(
                 200,
                 [

@@ -136,11 +136,12 @@ abstract class AbstractRelatedSearch implements SearchInterface
                 'category' => $searchFilter->getCategory(),
             ],
             'language' => 'en',
+            'userCountryCode' => $searchFilter->getLocation(),
         ];
 
         $query = [
             'hl' => $searchFilter->getLanguage(),
-            'tz' => '-60',
+            'tz' => '-120',
             'req' => json_encode($request),
             'token' => $searchFilter->getToken()
         ];
