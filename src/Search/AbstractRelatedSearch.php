@@ -6,11 +6,12 @@ use GSoares\GoogleTrends\Error\GoogleTrendsException;
 use GSoares\GoogleTrends\Result\RelatedResult;
 use GSoares\GoogleTrends\Result\ExploreResultCollection;
 use GSoares\GoogleTrends\Result\RelatedResultCollection;
+use GSoares\GoogleTrends\Result\ResultCollectionInterface;
 
 /**
  * @author Gabriel Felipe Soares <gabrielfs7@gmail.com>
  */
-abstract class AbstractRelatedSearch
+abstract class AbstractRelatedSearch implements SearchInterface
 {
     protected const TRENDS_URL = 'https://trends.google.com';
     protected const RELATED_SEARCH_URL = 'https://trends.google.com/trends/api/widgetdata/relatedsearches';
@@ -38,7 +39,7 @@ abstract class AbstractRelatedSearch
      *
      * @throws GoogleTrendsException
      */
-    public function search(SearchFilter $searchFilter): RelatedResultCollection
+    public function search(SearchFilter $searchFilter): ResultCollectionInterface
     {
         if (!$searchFilter->isConsideringRisingMetrics() && !$searchFilter->isConsideringTopMetrics()) {
             return new RelatedResultCollection('', ...[]);
@@ -135,11 +136,12 @@ abstract class AbstractRelatedSearch
                 'category' => $searchFilter->getCategory(),
             ],
             'language' => 'en',
+            'userCountryCode' => $searchFilter->getLocation(),
         ];
 
         $query = [
             'hl' => $searchFilter->getLanguage(),
-            'tz' => '-60',
+            'tz' => '-120',
             'req' => json_encode($request),
             'token' => $searchFilter->getToken()
         ];

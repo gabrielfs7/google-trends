@@ -10,6 +10,12 @@ use GSoares\GoogleTrends\Error\GoogleTrendsException;
  */
 class SearchFilter
 {
+    public const SEARCH_SOURCE_WEB = '';
+    public const SEARCH_SOURCE_NEWS = 'news';
+    public const SEARCH_SOURCE_IMAGES = 'images';
+    public const SEARCH_SOURCE_YOUTUBE = 'youtube';
+    public const SEARCH_SOURCE_GOOGLE_SHOPPING = 'frgoogle';
+
     private const DEFAULT_LANG = 'en-US';
     private const DEFAULT_COUNTRY = 'US';
 
@@ -57,11 +63,6 @@ class SearchFilter
      * @var string
      */
     private $searchType;
-
-    /**
-     * @var string
-     */
-    private $keywordType;
 
     /**
      * @var DateTimeImmutable
@@ -126,35 +127,35 @@ class SearchFilter
 
     public function considerImageSearch(): self
     {
-        $this->searchType = 'images';
+        $this->searchType = self::SEARCH_SOURCE_IMAGES;
 
         return $this;
     }
 
     public function considerGoogleShoppingSearch(): self
     {
-        $this->searchType = 'frgoogle';
+        $this->searchType = self::SEARCH_SOURCE_GOOGLE_SHOPPING;
 
         return $this;
     }
 
     public function considerYoutubeSearch(): self
     {
-        $this->searchType = 'youtube';
+        $this->searchType = self::SEARCH_SOURCE_YOUTUBE;
 
         return $this;
     }
 
     public function considerNewsSearch(): self
     {
-        $this->searchType = 'news';
+        $this->searchType = self::SEARCH_SOURCE_NEWS;
 
         return $this;
     }
 
     public function considerWebSearch(): self
     {
-        $this->searchType = '';
+        $this->searchType = self::SEARCH_SOURCE_WEB;
 
         return $this;
     }

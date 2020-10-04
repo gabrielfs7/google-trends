@@ -71,7 +71,7 @@ class ExploreSearch
 
         $query = [
             'hl' => $searchFilter->getLanguage(),
-            'tz' => '-60',
+            'tz' => '-120',
             'req' => json_encode($request),
         ];
 

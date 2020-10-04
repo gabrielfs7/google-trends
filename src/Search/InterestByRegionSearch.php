@@ -5,11 +5,12 @@ namespace GSoares\GoogleTrends\Search;
 use GSoares\GoogleTrends\Error\GoogleTrendsException;
 use GSoares\GoogleTrends\Result\InterestByRegionCollection;
 use GSoares\GoogleTrends\Result\InterestByRegionResult;
+use GSoares\GoogleTrends\Result\ResultCollectionInterface;
 
 /**
  * @author Gabriel Felipe Soares <gabrielfs7@gmail.com>
  */
-class InterestByRegionSearch
+class InterestByRegionSearch implements SearchInterface
 {
     private const SEARCH_URL = 'https://trends.google.com/trends/api/widgetdata/comparedgeo';
 
@@ -36,7 +37,7 @@ class InterestByRegionSearch
      *
      * @throws GoogleTrendsException
      */
-    public function search(SearchFilter $searchFilter): InterestByRegionCollection
+    public function search(SearchFilter $searchFilter): ResultCollectionInterface
     {
         $token = $this->exploreSearch
             ->search($searchFilter)
