@@ -49,7 +49,13 @@ A easier way to search on Google Trends and get a standard response in JSON or P
 
 Current available not PSR7 support. Check [\GSoares\GoogleTrends\Search\Psr7\Search](./src/Search/Psr7/Search.php).
 
-You can check all Open API specs [here](./doc/openapi.yml). And can quickly view it using swagger editor.
+You can check all Open API specs [here](./doc/openapi.yml). 
+
+![Open_API_Specs](./misc/open-api.png)
+
+And can quickly view it using [swagger editor](https://editor.swagger.io/) with (File -> Import URL -> Sellect openapi.yaml URL).
+
+![Swagger_Editor_Instructions](./misc/swagger-editor-instructions.png)
 
 Or follow the steps bellow if you prefer your own implementation:
 
