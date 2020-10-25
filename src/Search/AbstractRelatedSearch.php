@@ -107,37 +107,43 @@ abstract class AbstractRelatedSearch implements SearchInterface
     private function buildQuery(SearchFilter $searchFilter): string
     {
         $request = [
-            'restriction' => [
-                'geo' => [
-                    'country' => $searchFilter->getLocation(),
-                ],
-                'time' => $searchFilter->getTime(),
-                'originalTimeRangeForExploreUrl' => $searchFilter->getTime(),
-                'complexKeywordsRestriction' => [
-                    'keyword' => [
-                        [
-                            'type' => 'BROAD',
-                            'value' => $searchFilter->getSearchTerm(),
-                        ],
-                    ],
-                ],
+         'restriction' => [
+            'geo' => [
+               'country' => $searchFilter->getLocation(),
             ],
-            'keywordType' => $this->getKeywordType(),
-            'metric' => [
-                'TOP',
-                'RISING',
+            'time' => $searchFilter->getTime(),
+            'originalTimeRangeForExploreUrl' => $searchFilter->getTime(),
+         ],
+      ];
+
+      if (!is_null($searchFilter->getSearchTerm()) && !empty($searchFilter->getSearchTerm())) {
+         $request['restriction']['complexKeywordsRestriction'] = [
+            'keyword' => [
+               [
+                  'type' => 'BROAD',
+                  'value' => $searchFilter->getSearchTerm(),
+               ],
             ],
-            'trendinessSettings' => [
-                'compareTime' => $searchFilter->getCompareTime(),
-            ],
-            'requestOptions' => [
-                'property' => $searchFilter->getSearchType(),
-                'backend' => 'IZG',
-                'category' => $searchFilter->getCategory(),
-            ],
-            'language' => 'en',
-            'userCountryCode' => $searchFilter->getLocation(),
-        ];
+         ];
+      }
+      $request = array_merge($request, [
+
+         'keywordType' => $this->getKeywordType(),
+         'metric' => [
+            'TOP',
+            'RISING',
+         ],
+         'trendinessSettings' => [
+            'compareTime' => $searchFilter->getCompareTime(),
+         ],
+         'requestOptions' => [
+            'property' => $searchFilter->getSearchType(),
+            'backend' => 'IZG',
+            'category' => $searchFilter->getCategory(),
+         ],
+         'language' => 'en',
+         'userCountryCode' => $searchFilter->getLocation(),
+      ]);
 
         $query = [
             'hl' => $searchFilter->getLanguage(),
