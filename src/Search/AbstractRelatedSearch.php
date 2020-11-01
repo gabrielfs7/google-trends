@@ -113,14 +113,6 @@ abstract class AbstractRelatedSearch implements SearchInterface
                 ],
                 'time' => $searchFilter->getTime(),
                 'originalTimeRangeForExploreUrl' => $searchFilter->getTime(),
-                'complexKeywordsRestriction' => [
-                    'keyword' => [
-                        [
-                            'type' => 'BROAD',
-                            'value' => $searchFilter->getSearchTerm(),
-                        ],
-                    ],
-                ],
             ],
             'keywordType' => $this->getKeywordType(),
             'metric' => [
@@ -138,6 +130,17 @@ abstract class AbstractRelatedSearch implements SearchInterface
             'language' => 'en',
             'userCountryCode' => $searchFilter->getLocation(),
         ];
+
+        if (!empty($searchFilter->getSearchTerm())) {
+            $request['restriction']['complexKeywordsRestriction'] = [
+                'keyword' => [
+                    [
+                        'type' => 'BROAD',
+                        'value' => $searchFilter->getSearchTerm(),
+                    ],
+                ],
+            ];
+        }
 
         $query = [
             'hl' => $searchFilter->getLanguage(),
