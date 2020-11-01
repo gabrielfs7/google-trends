@@ -14,7 +14,7 @@ class SearchFilter
     public const SEARCH_SOURCE_NEWS = 'news';
     public const SEARCH_SOURCE_IMAGES = 'images';
     public const SEARCH_SOURCE_YOUTUBE = 'youtube';
-    public const SEARCH_SOURCE_GOOGLE_SHOPPING = 'frgoogle';
+    public const SEARCH_SOURCE_GOOGLE_SHOPPING = 'froogle';
 
     private const DEFAULT_LANG = 'en-US';
     private const DEFAULT_COUNTRY = 'US';
