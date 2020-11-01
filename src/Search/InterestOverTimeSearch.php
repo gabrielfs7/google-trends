@@ -91,14 +91,6 @@ class InterestOverTimeSearch implements SearchInterface
                     'geo' => [
                         'country' => $searchFilter->getLocation(),
                     ],
-                    'complexKeywordsRestriction' => [
-                        'keyword' => [
-                            [
-                                'type' => 'BROAD',
-                                'value' => $searchFilter->getSearchTerm(),
-                            ],
-                        ],
-                    ]
                 ],
             ],
             'requestOptions' => [
@@ -107,6 +99,17 @@ class InterestOverTimeSearch implements SearchInterface
                 'category' => $searchFilter->getCategory(),
             ]
         ];
+
+        if (!empty($searchFilter->getSearchTerm())) {
+            $request['comparisonItem'][0]['complexKeywordsRestriction'] = [
+                'keyword' => [
+                    [
+                        'type' => 'BROAD',
+                        'value' => $searchFilter->getSearchTerm(),
+                    ],
+                ],
+            ];
+        }
 
         $query = [
             'hl' => $searchFilter->getLanguage(),

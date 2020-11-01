@@ -60,7 +60,6 @@ class ExploreSearch
         $request = [
             'comparisonItem' => [
                 [
-                    'keyword' => $searchFilter->getSearchTerm(),
                     'geo' => $searchFilter->getLocation(),
                     'time' => $searchFilter->getTime()
                 ]
@@ -68,6 +67,10 @@ class ExploreSearch
             'category' => $searchFilter->getCategory(),
             'property' => $searchFilter->getSearchType(),
         ];
+
+        if (!empty($searchFilter->getSearchTerm())) {
+            $request['comparisonItem'][0]['keyword'] = $searchFilter->getSearchTerm();
+        }
 
         $query = [
             'hl' => $searchFilter->getLanguage(),
