@@ -146,7 +146,7 @@ components:
           - "images"
           - "news"
           - "youtube"
-          - "frgoogle" # Google Shopping
+          - "froogle" # Google Shopping
       description: Will do the search considering one of these data sources. Default = "" (considers web search)
     withTopMetrics:
       in: query

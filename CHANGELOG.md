@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.0.1
+
+- Fix Google Shopping wrong param name to froogle 
+
 ## 2.0.0
 
 - Add PSR7 Search compatibility
