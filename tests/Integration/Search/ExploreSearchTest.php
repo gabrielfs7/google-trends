@@ -30,7 +30,8 @@ class ExploreSearchTest extends TestCase
 
     public function setUp(): void
     {
-        $this->searchFilter = new SearchFilter(new DateTimeImmutable('2010-10-10 00:00:00'));
+        $this->searchFilter = (new SearchFilter(new DateTimeImmutable('2010-10-10 00:00:00')))
+            ->withSearchTerm('_keyword_');
         $this->searchRequest = $this->createMock(SearchRequest::class);
         $this->sut = new ExploreSearch($this->searchRequest);
     }
@@ -45,7 +46,7 @@ class ExploreSearchTest extends TestCase
         $this->searchRequest
             ->expects($this->once())
             ->method('search')
-            ->with('https://trends.google.com/trends/api/explore?hl=en-US&tz=-120&req=%7B%22comparisonItem%22:%5B%7B%22keyword%22:%22%22,%22geo%22:%22US%22,%22time%22:%222010-09-10+2010-10-10%22%7D%5D,%22category%22:0,%22property%22:%22%22%7D')
+            ->with('https://trends.google.com/trends/api/explore?hl=en-US&tz=-120&req=%7B%22comparisonItem%22:%5B%7B%22geo%22:%22US%22,%22time%22:%222010-09-10+2010-10-10%22,%22keyword%22:%22_keyword_%22%7D%5D,%22category%22:0,%22property%22:%22%22%7D')
             ->willReturn(
                 [
                     'widgets' => [

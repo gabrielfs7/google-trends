@@ -90,14 +90,6 @@ class InterestByRegionSearch implements SearchInterface
             'comparisonItem' => [
                 [
                     'time' => $searchFilter->getTime(),
-                    'complexKeywordsRestriction' => [
-                        'keyword' => [
-                            [
-                                'type' => 'BROAD',
-                                'value' => $searchFilter->getSearchTerm(),
-                            ],
-                        ],
-                    ]
                 ],
             ],
             'resolution' => 'REGION',
@@ -108,6 +100,17 @@ class InterestByRegionSearch implements SearchInterface
                 'category' => $searchFilter->getCategory(),
             ]
         ];
+
+        if (!empty($searchFilter->getSearchTerm())) {
+            $request['comparisonItem'][0]['complexKeywordsRestriction'] = [
+                'keyword' => [
+                    [
+                        'type' => 'BROAD',
+                        'value' => $searchFilter->getSearchTerm(),
+                    ],
+                ],
+            ];
+        }
 
         $query = [
             'hl' => $searchFilter->getLanguage(),

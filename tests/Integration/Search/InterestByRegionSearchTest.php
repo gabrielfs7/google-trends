@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 class InterestByRegionSearchTest extends TestCase
 {
     private const CURRENT_DATE = '2010-01-01 00:00:00';
-    private const SEARCH_URL = 'https://trends.google.com/trends/api/widgetdata/comparedgeo?hl=en-US&tz=-60&req=%7B%22geo%22:%7B%22country%22:%22US%22%7D,%22comparisonItem%22:%5B%7B%22time%22:%222010-09-10+2010-10-10%22,%22complexKeywordsRestriction%22:%7B%22keyword%22:%5B%7B%22type%22:%22BROAD%22,%22value%22:%22%22%7D%5D%7D%7D%5D,%22resolution%22:%22REGION%22,%22locale%22:%22en-US%22,%22requestOptions%22:%7B%22property%22:%22%22,%22backend%22:%22IZG%22,%22category%22:0%7D%7D&token=TOKEN';
+    private const SEARCH_URL = 'https://trends.google.com/trends/api/widgetdata/comparedgeo?hl=en-US&tz=-60&req=%7B%22geo%22:%7B%22country%22:%22US%22%7D,%22comparisonItem%22:%5B%7B%22time%22:%222010-09-10+2010-10-10%22,%22complexKeywordsRestriction%22:%7B%22keyword%22:%5B%7B%22type%22:%22BROAD%22,%22value%22:%22_keyword_%22%7D%5D%7D%7D%5D,%22resolution%22:%22REGION%22,%22locale%22:%22en-US%22,%22requestOptions%22:%7B%22property%22:%22%22,%22backend%22:%22IZG%22,%22category%22:0%7D%7D&token=TOKEN';
 
     /**
      * @var SearchRequest
@@ -41,7 +41,8 @@ class InterestByRegionSearchTest extends TestCase
 
     public function setUp(): void
     {
-        $this->searchFilter = new SearchFilter(new DateTimeImmutable('2010-10-10 00:00:00'));
+        $this->searchFilter = (new SearchFilter(new DateTimeImmutable('2010-10-10 00:00:00')))
+            ->withSearchTerm('_keyword_');
         $this->searchRequest = $this->createMock(SearchRequest::class);
         $this->exploreSearch = $this->createMock(ExploreSearch::class);
         $this->sut = new InterestByRegionSearch($this->exploreSearch, $this->searchRequest);
