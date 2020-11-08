@@ -237,6 +237,21 @@ The Project is available on [Packagist](https://packagist.org/packages/gabrielfs
 composer require gabrielfs7/google-trends
 ```
 
+### Testing
+
+Start PHP local server:
+
+```shell script
+php -S localhost:8000 web/index.php
+```
+
+Access the api endpoints:
+
+- http://localhost:8000/search-interest-by-region?withTopMetrics=1&withRisingMetrics=1&searchTerm=carros&location=BR
+- http://localhost:8000/search-interest-over-time?withTopMetrics=1&withRisingMetrics=1&searchTerm=carros&location=BR
+- http://localhost:8000/search-related-topics?withTopMetrics=1&withRisingMetrics=1&searchTerm=carros&location=BR
+- http://localhost:8000/search-related-queries?withTopMetrics=1&withRisingMetrics=1&searchTerm=carros&location=BR
+
 ## Example
 
 After install it you can access an working example [here](/web/index.php).

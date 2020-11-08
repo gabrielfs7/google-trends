@@ -31,6 +31,7 @@ class SearchFilter
 
     /**
      * @var string
+     * @deprecated Will be removed, cause other languages do not work as filter. We should utilize only location
      */
     private $language;
 
@@ -174,6 +175,9 @@ class SearchFilter
         return $this;
     }
 
+    /**
+     * @deprecated Will be removed, cause other languages do not work as filter. We should utilize only location
+     */
     public function withLanguage(string $language): self
     {
         $this->language = $language;
@@ -212,6 +216,9 @@ class SearchFilter
         return $this->location;
     }
 
+    /**
+     * @deprecated Will be removed, cause other languages do not work as filter. We should utilize only location
+     */
     public function getLanguage(): string
     {
         return $this->language;
