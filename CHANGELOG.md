@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2.0.3
+
+- Force `userCountryCode` to be US to avoid 401 error
+- Deprecate language filter
+
 ## 2.0.2
 
 - Fix search using empty search term
