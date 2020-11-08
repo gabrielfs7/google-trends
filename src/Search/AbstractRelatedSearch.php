@@ -128,7 +128,7 @@ abstract class AbstractRelatedSearch implements SearchInterface
                 'category' => $searchFilter->getCategory(),
             ],
             'language' => 'en',
-            'userCountryCode' => $searchFilter->getLocation(),
+            'userCountryCode' => 'US',
         ];
 
         if (!empty($searchFilter->getSearchTerm())) {
