@@ -6,6 +6,8 @@ use GSoares\GoogleTrends\Error\GoogleTrendsException;
 use GSoares\GoogleTrends\Result\InterestByRegionCollection;
 use GSoares\GoogleTrends\Result\InterestByRegionResult;
 use GSoares\GoogleTrends\Result\ResultCollectionInterface;
+use GSoares\GoogleTrends\Result\InterestByCityCollection;
+use GSoares\GoogleTrends\Result\InterestByCityResult;
 
 /**
  * @author Gabriel Felipe Soares <gabrielfs7@gmail.com>
@@ -45,7 +47,8 @@ class InterestByRegionSearch implements SearchInterface
             ->getToken();
 
         $searchUrl = $this->buildQuery($searchFilter->withToken($token));
-
+//        echo $searchUrl;
+//        exit;
         $responseDecoded = $this->searchRequest->search($searchUrl);
 
         if (!isset($responseDecoded['default']['geoMapData'])) {
@@ -58,9 +61,21 @@ class InterestByRegionSearch implements SearchInterface
         }
 
         $results = [];
-
+//        echo "<pre>";
+//        print_r($responseDecoded['default']['geoMapData']);
+//        exit;
         foreach ($responseDecoded['default']['geoMapData'] ?? [] as $row) {
-            if (!isset($row['geoCode'], $row['geoName'], $row['value'], $row['maxValueIndex'])) {
+            if($searchFilter->getResolution() == 'CITY'){
+                if (!isset($responseDecoded['default']['geoMapData'])) {
+                    throw new GoogleTrendsException(
+                        sprintf(
+                            'Invalid google response body "%s"...',
+                            substr(var_export($responseDecoded, true), 100)
+                        )
+                    );
+                }
+                
+                if (!isset($row['geoName'], $row['value'], $row['maxValueIndex'])) {
                 throw new GoogleTrendsException(
                     sprintf(
                         'Google compared geo list does not contain all keys. Only has: %s',
@@ -68,49 +83,75 @@ class InterestByRegionSearch implements SearchInterface
                     )
                 );
             }
+            
+                $results[] = new InterestByCityResult(
+                    $row['geoName'],
+                    (int)($row['value'][0] ?? 0),
+                    (int)$row['maxValueIndex'],
+                    (bool)($row['hasData'] ?? false),
+                    (string)($row['coordinates']['lat'] ?? false),
+                    (string)($row['coordinates']['lng'] ?? false)
+                );
+            }else{
+                if (!isset($row['geoCode'], $row['geoName'], $row['value'], $row['maxValueIndex'])) {
+                    throw new GoogleTrendsException(
+                        sprintf(
+                            'Google compared geo list does not contain all keys. Only has: %s',
+                            implode(', ', array_keys($row))
+                        )
+                    );
+                }
+                
+                $results[] = new InterestByRegionResult(
+                    $row['geoCode'],
+                    $row['geoName'],
+                    (int)($row['value'][0] ?? 0),
+                    (int)$row['maxValueIndex'],
+                    (bool)($row['hasData'] ?? false)
+                );
+            }
 
-            $results[] = new InterestByRegionResult(
-                $row['geoCode'],
-                $row['geoName'],
-                (int)($row['value'][0] ?? 0),
-                (int)$row['maxValueIndex'],
-                (bool)($row['hasData'] ?? false)
-            );
+            
         }
-
-        return new InterestByRegionCollection($searchUrl, ...$results);
+        
+        if($searchFilter->getResolution() == 'CITY'){
+            return new InterestByCityCollection($searchUrl, ...$results);
+        }else{
+            return new InterestByRegionCollection($searchUrl, ...$results);
+        }
     }
 
     private function buildQuery(SearchFilter $searchFilter): string
     {
+        if($searchFilter->getLocation() != ''){
+            $geo = ['country' => $searchFilter->getLocation()];
+        }else{
+            $geo = (object)[];
+        }
+        
         $request = [
-            'geo' => [
-                'country' => $searchFilter->getLocation(),
-            ],
+            'geo' => $geo,
             'comparisonItem' => [
                 [
                     'time' => $searchFilter->getTime(),
+                    'complexKeywordsRestriction' => [
+                        'keyword' => [
+                            [
+                                'type' => 'BROAD',
+                                'value' => $searchFilter->getSearchTerm(),
+                            ],
+                        ],
+                    ]
                 ],
             ],
-            'resolution' => 'REGION',
+            'resolution' => $searchFilter->getResolution(),
             'locale' => $searchFilter->getLanguage(),
             'requestOptions' => [
-                'property' => '',
+                'property' => $searchFilter->getSearchType(),
                 'backend' => 'IZG',
                 'category' => $searchFilter->getCategory(),
             ]
         ];
-
-        if (!empty($searchFilter->getSearchTerm())) {
-            $request['comparisonItem'][0]['complexKeywordsRestriction'] = [
-                'keyword' => [
-                    [
-                        'type' => 'BROAD',
-                        'value' => $searchFilter->getSearchTerm(),
-                    ],
-                ],
-            ];
-        }
 
         $query = [
             'hl' => $searchFilter->getLanguage(),

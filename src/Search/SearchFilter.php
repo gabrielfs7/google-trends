@@ -14,7 +14,7 @@ class SearchFilter
     public const SEARCH_SOURCE_NEWS = 'news';
     public const SEARCH_SOURCE_IMAGES = 'images';
     public const SEARCH_SOURCE_YOUTUBE = 'youtube';
-    public const SEARCH_SOURCE_GOOGLE_SHOPPING = 'froogle';
+    public const SEARCH_SOURCE_GOOGLE_SHOPPING = 'frgoogle';
 
     private const DEFAULT_LANG = 'en-US';
     private const DEFAULT_COUNTRY = 'US';
@@ -31,7 +31,6 @@ class SearchFilter
 
     /**
      * @var string
-     * @deprecated Will be removed, cause other languages do not work as filter. We should utilize only location
      */
     private $language;
 
@@ -69,6 +68,11 @@ class SearchFilter
      * @var DateTimeImmutable
      */
     private $currentDate;
+    
+    /**
+     * @var string
+     */
+    private $resolution;
 
     public function __construct(DateTimeImmutable $currentDate = null)
     {
@@ -76,6 +80,7 @@ class SearchFilter
         $this->searchTerm = '';
         $this->category = 0;
         $this->currentDate = $currentDate ?? new DateTimeImmutable();
+        $this->resolution = '';
 
         $this->withinInterval($this->currentDate->modify('-1 month'), $this->currentDate)
             ->withLanguage(self::DEFAULT_LANG)
@@ -175,9 +180,6 @@ class SearchFilter
         return $this;
     }
 
-    /**
-     * @deprecated Will be removed, cause other languages do not work as filter. We should utilize only location
-     */
     public function withLanguage(string $language): self
     {
         $this->language = $language;
@@ -216,9 +218,6 @@ class SearchFilter
         return $this->location;
     }
 
-    /**
-     * @deprecated Will be removed, cause other languages do not work as filter. We should utilize only location
-     */
     public function getLanguage(): string
     {
         return $this->language;
@@ -262,5 +261,17 @@ class SearchFilter
     public function isConsideringRisingMetrics(): bool
     {
         return in_array('RISING', $this->metrics);
+    }
+    
+    public function withResolution(string $resolution): self
+    {
+        $this->resolution = $resolution;
+
+        return $this;
+    }
+    
+    public function getResolution(): string
+    {
+        return $this->resolution;
     }
 }
