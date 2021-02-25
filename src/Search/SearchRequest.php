@@ -122,9 +122,8 @@ class SearchRequest
 
     private function getRefreshedCookieHeader(ClientException $exception): string
     {
-        return (string)explode(
-            ';',
-            $exception->getResponse()->getHeaders()['Set-Cookie'][0] ?? []
-        )[0];
+        return $exception->getResponse() && isset($exception->getResponse()->getHeaders()['Set-Cookie'][0])
+            ? (string)explode(';', $exception->getResponse()->getHeaders()['Set-Cookie'][0])[0]
+            : '';
     }
 }
