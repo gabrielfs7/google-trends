@@ -1,11 +1,11 @@
 {
-  "name": "gabrielfs7/google-trends",
+  "name": "fadel/google-trends",
   "description": "PHP Google Trends API",
   "license": "MIT",
   "authors": [
     {
       "name": "Gabriel Felipe Soares",
-      "email": "gabrielfs7@gmail.com"
+      "email": "ahmedfadel1717@gmail.com"
     }
   ],
   "require": {
